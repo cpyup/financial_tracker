@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class FinancialTracker {
 
-    private static ArrayList<Transaction> transactions = new ArrayList<Transaction>();
+    private static final ArrayList<Transaction> transactions = new ArrayList<Transaction>();
     private static final String FILE_NAME = "transactions.csv";
     private static final String DATE_FORMAT = "yyyy-MM-dd";
     private static final String TIME_FORMAT = "HH:mm:ss";
@@ -21,30 +21,20 @@ public class FinancialTracker {
 
         while (running) {
             System.out.println("Welcome to TransactionApp");
-            System.out.println("Choose an option:");
-            System.out.println("D) Add Deposit");
-            System.out.println("P) Make Payment (Debit)");
-            System.out.println("L) Ledger");
-            System.out.println("X) Exit");
+            System.out.println("\nChoose an option:");
+            System.out.println("\tD) Add Deposit");
+            System.out.println("\tP) Make Payment (Debit)");
+            System.out.println("\tL) Ledger");
+            System.out.println("\tX) Exit");
 
             String input = scanner.nextLine().trim();
 
             switch (input.toUpperCase()) {
-                case "D":
-                    addDeposit(scanner);
-                    break;
-                case "P":
-                    addPayment(scanner);
-                    break;
-                case "L":
-                    ledgerMenu(scanner);
-                    break;
-                case "X":
-                    running = false;
-                    break;
-                default:
-                    System.out.println("Invalid option");
-                    break;
+                case "D" -> addDeposit(scanner);
+                case "P" -> addPayment(scanner);
+                case "L" -> ledgerMenu(scanner);
+                case "X" -> running = false;
+                default -> System.out.println("\nInvalid option");
             }
         }
 
@@ -82,12 +72,12 @@ public class FinancialTracker {
         boolean running = true;
         while (running) {
             System.out.println("Ledger");
-            System.out.println("Choose an option:");
-            System.out.println("A) A`ll");
-            System.out.println("D) Deposits");
-            System.out.println("P) Payments");
-            System.out.println("R) Reports");
-            System.out.println("H) Home");
+            System.out.println("\nChoose an option:");
+            System.out.println("\tA) A`ll");
+            System.out.println("\tD) Deposits");
+            System.out.println("\tP) Payments");
+            System.out.println("\tR) Reports");
+            System.out.println("\tH) Home");
 
             String input = scanner.nextLine().trim();
 
@@ -107,7 +97,7 @@ public class FinancialTracker {
                 case "H":
                     running = false;
                 default:
-                    System.out.println("Invalid option");
+                    System.out.println("\nInvalid option");
                     break;
             }
         }
@@ -132,13 +122,13 @@ public class FinancialTracker {
         boolean running = true;
         while (running) {
             System.out.println("Reports");
-            System.out.println("Choose an option:");
-            System.out.println("1) Month To Date");
-            System.out.println("2) Previous Month");
-            System.out.println("3) Year To Date");
-            System.out.println("4) Previous Year");
-            System.out.println("5) Search by Vendor");
-            System.out.println("0) Back");
+            System.out.println("\nChoose an option:");
+            System.out.println("\t1) Month To Date");
+            System.out.println("\t2) Previous Month");
+            System.out.println("\t3) Year To Date");
+            System.out.println("\t4) Previous Year");
+            System.out.println("\t5) Search by Vendor");
+            System.out.println("\t0) Back");
 
             String input = scanner.nextLine().trim();
 
@@ -162,7 +152,7 @@ public class FinancialTracker {
                 case "0":
                     running = false;
                 default:
-                    System.out.println("Invalid option");
+                    System.out.println("\nInvalid option");
                     break;
             }
         }
