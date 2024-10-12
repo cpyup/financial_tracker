@@ -6,6 +6,6 @@ import java.time.LocalTime;
 public record Transaction(LocalDate date, LocalTime time, String description, String vendor, double amount) {
     @Override
     public String toString(){
-        return "";
+        return date.toString()+" "+time.toString()+" "+description+" "+vendor+" "+amount;
     }
 }
