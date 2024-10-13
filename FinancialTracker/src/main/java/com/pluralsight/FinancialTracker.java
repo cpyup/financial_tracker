@@ -104,7 +104,7 @@ public class FinancialTracker {
         // Format the output for each transaction
         for (Transaction t : targetInventory) {
             // Determine color based on the amount
-            String color = t.amount() < 0 ? "\u001B[31m" : "\u001B[32m"; // Red for negative, green for positive
+            String color = t.amount() < 0 ? "\u001B[30;41m" : "\u001B[30;42m"; // Red for negative, green for positive
             String resetColor = "\u001B[0m"; // Reset color
 
             output.append(color);
