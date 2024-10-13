@@ -94,8 +94,8 @@ public class FinancialTracker {
         int dateWidth = 15;
         int timeWidth = 15;
         int descriptionWidth = 30;
-        int vendorWidth = 25;
-        int amountWidth = 10;
+        int vendorWidth = 30;
+        int amountWidth = 6;
 
         // Format header
         output.append(String.format("%-" + dateWidth + "s %-" + timeWidth + "s %-" + descriptionWidth + "s %-" + vendorWidth + "s %-" + amountWidth + "s%n",
