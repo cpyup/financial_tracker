@@ -87,7 +87,7 @@ public class FinancialTracker {
         // If any errors occur, an appropriate error message should be displayed.
     }
 
-    private static String formattedTable() {
+    private static String formattedTable(ArrayList<Transaction> targetInventory) {
         StringBuilder output = new StringBuilder();
 
         // Define fixed widths for each column
@@ -102,7 +102,7 @@ public class FinancialTracker {
                 "Date", "Time", "Description", "Vendor", "Amount"));
 
         // Format the output for each transaction
-        for (Transaction t : transactions) {
+        for (Transaction t : targetInventory) {
             output.append(String.format("%-" + dateWidth + "s %-" + timeWidth + "s %-" + descriptionWidth + "s %-" + vendorWidth + "s %-" + amountWidth + ".2f%n",
                     t.date().toString(),
                     t.time().toString(),
@@ -155,12 +155,7 @@ public class FinancialTracker {
     }
 
     private static void displayLedger() {
-        /*for(Transaction t : transactions){
-            System.out.println(t);
-        }
-        // This method should display a table of all transactions in the `transactions` ArrayList.
-        // The table should have columns for date, time, description, vendor, and amount.*/
-        System.out.println(formattedTable());
+        System.out.println(formattedTable(transactions));
     }
 
     private static void displayDeposits() {
