@@ -89,29 +89,24 @@ public class FinancialTracker {
 
     private static String formattedTable() {
         StringBuilder output = new StringBuilder();
-        HashMap<Transaction, Integer> stringSize = new HashMap<>();
-        int maxSize = 0;
 
-        // Calculate the maximum description length
-        for (Transaction t : transactions) {
-            int descriptionLength = t.description().length();
-            stringSize.put(t, descriptionLength);
-            if (descriptionLength > maxSize) {
-                maxSize = descriptionLength;
-            }
-        }
+        // Define fixed widths for each column
+        int dateWidth = 15;
+        int timeWidth = 15;
+        int descriptionWidth = 30;
+        int vendorWidth = 25;
+        int amountWidth = 10;
+
+        // Format header
+        output.append(String.format("%-" + dateWidth + "s %-" + timeWidth + "s %-" + descriptionWidth + "s %-" + vendorWidth + "s %-" + amountWidth + "s%n",
+                "Date", "Time", "Description", "Vendor", "Amount"));
 
         // Format the output for each transaction
         for (Transaction t : transactions) {
-            // Right pad the description to match the max size
-            String description = t.description();
-            String paddedDescription = String.format("%-" + maxSize + "s", description); // Left pad with spaces
-
-            // Format the output string
-            output.append(String.format("%s %s %s %s %.2f%n",
+            output.append(String.format("%-" + dateWidth + "s %-" + timeWidth + "s %-" + descriptionWidth + "s %-" + vendorWidth + "s %-" + amountWidth + ".2f%n",
                     t.date().toString(),
                     t.time().toString(),
-                    paddedDescription,
+                    t.description(),
                     t.vendor(),
                     t.amount()));
         }
