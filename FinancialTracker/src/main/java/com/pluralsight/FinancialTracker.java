@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class FinancialTracker {
@@ -86,6 +87,38 @@ public class FinancialTracker {
         // If any errors occur, an appropriate error message should be displayed.
     }
 
+    private static String formattedTable() {
+        StringBuilder output = new StringBuilder();
+        HashMap<Transaction, Integer> stringSize = new HashMap<>();
+        int maxSize = 0;
+
+        // Calculate the maximum description length
+        for (Transaction t : transactions) {
+            int descriptionLength = t.description().length();
+            stringSize.put(t, descriptionLength);
+            if (descriptionLength > maxSize) {
+                maxSize = descriptionLength;
+            }
+        }
+
+        // Format the output for each transaction
+        for (Transaction t : transactions) {
+            // Right pad the description to match the max size
+            String description = t.description();
+            String paddedDescription = String.format("%-" + maxSize + "s", description); // Left pad with spaces
+
+            // Format the output string
+            output.append(String.format("%s %s %s %s %.2f%n",
+                    t.date().toString(),
+                    t.time().toString(),
+                    paddedDescription,
+                    t.vendor(),
+                    t.amount()));
+        }
+
+        return output.toString();
+    }
+
     private static void addDeposit(Scanner scanner) {
         // This method should prompt the user to enter the date, time, description, vendor, and amount of a deposit.
         // The user should enter the date and time in the following format: yyyy-MM-dd HH:mm:ss
@@ -127,11 +160,12 @@ public class FinancialTracker {
     }
 
     private static void displayLedger() {
-        for(Transaction t : transactions){
+        /*for(Transaction t : transactions){
             System.out.println(t);
         }
         // This method should display a table of all transactions in the `transactions` ArrayList.
-        // The table should have columns for date, time, description, vendor, and amount.
+        // The table should have columns for date, time, description, vendor, and amount.*/
+        System.out.println(formattedTable());
     }
 
     private static void displayDeposits() {
