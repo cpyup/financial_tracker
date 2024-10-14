@@ -37,8 +37,8 @@ public class FinancialTracker {
             String input = scanner.nextLine().trim();
 
             switch (input.toUpperCase()) {
-                case "D" -> addDeposit();
-                case "P" -> addPayment(scanner);
+                case "D" -> addTransaction(scanner,false);
+                case "P" -> addTransaction(scanner,true);
                 case "L" -> ledgerMenu(scanner);
                 case "X" -> running = false;
                 default -> System.out.println("\nInvalid option");
@@ -126,27 +126,15 @@ public class FinancialTracker {
         return output.toString();
     }
 
-    private static void addDeposit() {
-        // This method should prompt the user to enter the date, time, description, vendor, and amount of a deposit.
-        // The user should enter the date and time in the following format: yyyy-MM-dd HH:mm:ss
-        // The amount should be a positive number.
-        // After validating the input, a new `Transaction` object should be created with the entered values.
-        // The new deposit should be added to the `transactions` ArrayList.
-    }
-
-    private static void addPayment(Scanner scanner) {
-        // This method should prompt the user to enter the date, time, description, vendor, and amount of a payment.
-        // The user should enter the date and time in the following format: yyyy-MM-dd HH:mm:ss
-        // The amount received should be a positive number, transformed to a negative number.
-        // After validating the input, a new `Transaction` object should be created with the entered values.
-        // The new payment should be added to the `transactions` ArrayList.
+    private static void addTransaction(Scanner scanner, boolean isPayment) {
+        // Prompt for date input
         boolean validInput = false;
 
-        System.out.print("Enter payment date (yyyy-MM-dd): ");
+        System.out.print("Enter transaction date (yyyy-MM-dd): ");
+        LocalDate date = null;
 
         // Validate the date input
-        LocalDate date = null;
-        while (!validInput){
+        while (!validInput) {
             String dateInput = scanner.nextLine().trim();
             try {
                 date = LocalDate.parse(dateInput, DATE_FORMATTER);
@@ -158,32 +146,30 @@ public class FinancialTracker {
         validInput = false;
 
         // Prompt for time input
-        System.out.print("Enter payment time (HH:mm:ss): ");
-
+        System.out.print("Enter transaction time (HH:mm:ss): ");
+        LocalTime time = null;
 
         // Validate the time input
-        LocalTime time = null;
-        while (!validInput){
+        while (!validInput) {
             String timeInput = scanner.nextLine().trim();
             try {
                 time = LocalTime.parse(timeInput, TIME_FORMATTER);
                 validInput = true;
             } catch (Exception e) {
                 System.out.println("Invalid time format. Please use HH:mm:ss.");
-                break;
             }
         }
         validInput = false;
 
         // Prompt for the description and vendor
-        System.out.print("Enter payment description: ");
+        System.out.print("Enter transaction description: ");
         String description = scanner.nextLine().trim();
 
         System.out.print("Enter vendor: ");
         String vendor = scanner.nextLine().trim();
 
-        // Prompt for the payment amount
-        System.out.print("Enter payment amount: ");
+        // Prompt for the amount
+        System.out.print("Enter transaction amount: ");
         double amount = 0;
         while (!validInput) {
             try {
@@ -198,18 +184,21 @@ public class FinancialTracker {
             }
         }
 
-        // Convert the amount to a negative number, since it's a payment
-        amount = -amount;
+        // Adjust the amount based on the transaction type
+        if (isPayment) {
+            amount = -amount; // Convert to negative for payments
+        }
 
         // Create a new Transaction object with the validated inputs
         Transaction newTransaction = new Transaction(date, time, description, vendor, amount);
 
         // Add the new transaction to the transactions list
         transactions.add(newTransaction);
-        System.out.println("Payment added successfully.\n");
+        System.out.println(isPayment ? "Payment added successfully.\n" : "Deposit added successfully.\n");
+
+        // Add the transaction to transactions.csv
+        
     }
-
-
 
     private static void ledgerMenu(Scanner scanner) {
         boolean running = true;
@@ -248,6 +237,8 @@ public class FinancialTracker {
         // Display the transactions if the list is not empty
         if (!filteredTransactions.isEmpty()) {
             System.out.println(formattedTable((ArrayList<Transaction>) filteredTransactions));
+        }else{
+            System.out.println("No Results Found Matching Criteria.");
         }
     }
 
@@ -303,7 +294,6 @@ public class FinancialTracker {
         }
     }
 
-
     private static void filterTransactionsByDate(LocalDate startDate, LocalDate endDate) {
         // This method filters the transactions by date and prints a report to the console.
         // It takes two parameters: startDate and endDate, which represent the range of dates to filter by.
@@ -321,6 +311,8 @@ public class FinancialTracker {
 
         if(!dateList.isEmpty()){
             System.out.println(formattedTable(dateList));
+        }else{
+            System.out.println("No Results Found Matching Criteria.");
         }
     }
 
@@ -337,6 +329,8 @@ public class FinancialTracker {
 
         if(!vendorList.isEmpty()){
             System.out.println(formattedTable(vendorList));
+        }else{
+            System.out.println("No Results Found Matching Criteria.");
         }
     }
 }
