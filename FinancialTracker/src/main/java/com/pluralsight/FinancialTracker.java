@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Scanner;
 
 public class FinancialTracker {
@@ -36,7 +35,7 @@ public class FinancialTracker {
             String input = scanner.nextLine().trim();
 
             switch (input.toUpperCase()) {
-                case "D" -> addDeposit(scanner);
+                case "D" -> addDeposit();
                 case "P" -> addPayment(scanner);
                 case "L" -> ledgerMenu(scanner);
                 case "X" -> running = false;
@@ -117,7 +116,7 @@ public class FinancialTracker {
 
             // Color the amount based on its value
             String amountColor = (t.amount() < 0) ? "\u001B[91m" : "\u001B[92m"; // Red for negative, green for positive
-            output.append(amountColor + String.format("%-" + amountWidth + ".2f", t.amount()) + " " + resetColor+"\n");
+            output.append(amountColor).append(String.format("%-" + amountWidth + ".2f", t.amount())).append(" ").append(resetColor).append("\n");
 
             lineCount++;
         }
@@ -125,7 +124,7 @@ public class FinancialTracker {
         return output.toString();
     }
 
-    private static void addDeposit(Scanner scanner) {
+    private static void addDeposit() {
         // This method should prompt the user to enter the date, time, description, vendor, and amount of a deposit.
         // The user should enter the date and time in the following format: yyyy-MM-dd HH:mm:ss
         // The amount should be a positive number.
@@ -143,7 +142,7 @@ public class FinancialTracker {
         String dateInput = scanner.nextLine();
 
         // Validate the date input
-        LocalDate date = null;
+        LocalDate date;
         try {
             date = LocalDate.parse(dateInput, DATE_FORMATTER);
         } catch (Exception e) {
@@ -156,7 +155,7 @@ public class FinancialTracker {
         String timeInput = scanner.nextLine();
 
         // Validate the time input
-        LocalTime time = null;
+        LocalTime time;
         try {
             time = LocalTime.parse(timeInput, TIME_FORMATTER);
         } catch (Exception e) {
@@ -233,8 +232,8 @@ public class FinancialTracker {
         // This method should display a table of all deposits in the `transactions` ArrayList.
         // The table should have columns for date, time, description, vendor, and amount.
         ArrayList<Transaction> depositList = new ArrayList<>();
-        for(int i = 0; i < transactions.size(); i++){
-            if(transactions.get(i).amount() > 0)depositList.add(transactions.get(i));
+        for (Transaction transaction : transactions) {
+            if (transaction.amount() > 0) depositList.add(transaction);
         }
 
         if(!depositList.isEmpty()){
@@ -246,8 +245,8 @@ public class FinancialTracker {
         // This method should display a table of all payments in the `transactions` ArrayList.
         // The table should have columns for date, time, description, vendor, and amount.
         ArrayList<Transaction> paymentList = new ArrayList<>();
-        for(int i = 0; i < transactions.size(); i++){
-            if(transactions.get(i).amount() < 0)paymentList.add(transactions.get(i));
+        for (Transaction transaction : transactions) {
+            if (transaction.amount() < 0) paymentList.add(transaction);
         }
 
         if(!paymentList.isEmpty()){
@@ -315,11 +314,11 @@ public class FinancialTracker {
         // Transactions that fall within the date range are printed to the console.
         // If no transactions fall within the date range, the method prints a message indicating that there are no results.
         ArrayList<Transaction> dateList = new ArrayList<>();
-        for (int i = 0; i < transactions.size(); i++) {
-            LocalDate transactionDate = transactions.get(i).date();
+        for (Transaction transaction : transactions) {
+            LocalDate transactionDate = transaction.date();
 
             if (!transactionDate.isBefore(startDate) && !transactionDate.isAfter(endDate)) {
-                dateList.add(transactions.get(i));
+                dateList.add(transaction);
             }
         }
 
@@ -335,8 +334,8 @@ public class FinancialTracker {
         // Transactions with a matching vendor name are printed to the console.
         // If no transactions match the specified vendor name, the method prints a message indicating that there are no results.
         ArrayList<Transaction> vendorList = new ArrayList<>();
-        for(int i = 0; i < transactions.size(); i++){
-            if(transactions.get(i).vendor().equalsIgnoreCase(vendor))vendorList.add(transactions.get(i));
+        for (Transaction transaction : transactions) {
+            if (transaction.vendor().equalsIgnoreCase(vendor)) vendorList.add(transaction);
         }
 
         if(!vendorList.isEmpty()){
