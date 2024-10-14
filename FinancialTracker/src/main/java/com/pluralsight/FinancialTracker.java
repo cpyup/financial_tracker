@@ -215,8 +215,8 @@ public class FinancialTracker {
 
             switch (input.toUpperCase()) {
                 case "A" -> displayLedger();
-                case "D" -> displayDeposits();
-                case "P" -> displayPayments();
+                case "D" -> displayTransactionByType(true);
+                case "P" -> displayTransactionByType(false);
                 case "R" -> reportsMenu(scanner);
                 case "H" -> running = false;
                 default -> System.out.println("\nInvalid option");
@@ -228,30 +228,20 @@ public class FinancialTracker {
         System.out.println(formattedTable(transactions));
     }
 
-    private static void displayDeposits() {
-        // This method should display a table of all deposits in the `transactions` ArrayList.
-        // The table should have columns for date, time, description, vendor, and amount.
-        ArrayList<Transaction> depositList = new ArrayList<>();
+    private static void displayTransactionByType(Boolean isDeposit){
+        ArrayList<Transaction> transactionTypeList = new ArrayList<>();
         for (Transaction transaction : transactions) {
-            if (transaction.amount() > 0) depositList.add(transaction);
+            if(isDeposit){
+                if (transaction.amount() > 0) transactionTypeList.add(transaction);
+            }else{
+                if (transaction.amount() < 0) transactionTypeList.add(transaction);
+            }
         }
 
-        if(!depositList.isEmpty()){
-            System.out.println(formattedTable(depositList));
-        }
-    }
-
-    private static void displayPayments() {
-        // This method should display a table of all payments in the `transactions` ArrayList.
-        // The table should have columns for date, time, description, vendor, and amount.
-        ArrayList<Transaction> paymentList = new ArrayList<>();
-        for (Transaction transaction : transactions) {
-            if (transaction.amount() < 0) paymentList.add(transaction);
+        if(!transactionTypeList.isEmpty()){
+            System.out.println(formattedTable(transactionTypeList));
         }
 
-        if(!paymentList.isEmpty()){
-            System.out.println(formattedTable(paymentList));
-        }
     }
 
     private static void reportsMenu(Scanner scanner) {
