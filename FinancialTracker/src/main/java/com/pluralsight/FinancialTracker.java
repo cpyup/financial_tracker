@@ -8,7 +8,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class FinancialTracker {
 
@@ -16,8 +18,8 @@ public class FinancialTracker {
     private static final String FILE_NAME = "transactions.csv";
     private static final String DATE_FORMAT = "yyyy-MM-dd";
     private static final String TIME_FORMAT = "HH:mm:ss";
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_FORMAT);
-    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern(TIME_FORMAT);
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_FORMAT);
+    public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern(TIME_FORMAT);
 
     public static void main(String[] args) {
         loadTransactions(FILE_NAME);
@@ -237,20 +239,16 @@ public class FinancialTracker {
         System.out.println(formattedTable(transactions));
     }
 
-    private static void displayTransactionByType(Boolean isDeposit){
-        ArrayList<Transaction> transactionTypeList = new ArrayList<>();
-        for (Transaction transaction : transactions) {
-            if(isDeposit){
-                if (transaction.amount() > 0) transactionTypeList.add(transaction);
-            }else{
-                if (transaction.amount() < 0) transactionTypeList.add(transaction);
-            }
-        }
+    private static void displayTransactionByType(boolean isDeposit) {
+        // Use streams to filter the transactions
+        List<Transaction> filteredTransactions = transactions.stream()
+                .filter(transaction -> (isDeposit && transaction.amount() > 0) || (!isDeposit && transaction.amount() < 0))
+                .collect(Collectors.toList());
 
-        if(!transactionTypeList.isEmpty()){
-            System.out.println(formattedTable(transactionTypeList));
+        // Display the transactions if the list is not empty
+        if (!filteredTransactions.isEmpty()) {
+            System.out.println(formattedTable((ArrayList<Transaction>) filteredTransactions));
         }
-
     }
 
     private static void reportsMenu(Scanner scanner) {
