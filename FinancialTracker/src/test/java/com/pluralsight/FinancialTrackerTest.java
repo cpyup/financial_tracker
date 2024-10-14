@@ -3,11 +3,7 @@ package com.pluralsight;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,5 +24,45 @@ class FinancialTrackerTest {
         if(file.delete()){
             System.out.println("Deleted Test File");
         }
+    }
+
+    @Test
+    void addPayment_validInput(){
+
+    }
+
+    @Test
+    void addPayment_largeAmount(){
+
+    }
+
+    @Test
+    void addPayment_smallAmount(){
+
+    }
+
+    @Test
+    void addPayment_invalidDate(){
+
+    }
+
+    @Test
+    void addPayment_invalidTime(){
+
+    }
+
+    @Test
+    void addPayment_invalidAmount(){
+
+    }
+
+    @Test
+    void addPayment_multipleInvalid(){
+
+    }
+
+    @Test
+    void addPayment_validateTrimming(){
+
     }
 }
