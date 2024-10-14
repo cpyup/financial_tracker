@@ -139,7 +139,67 @@ public class FinancialTracker {
         // The amount received should be a positive number, transformed to a negative number.
         // After validating the input, a new `Transaction` object should be created with the entered values.
         // The new payment should be added to the `transactions` ArrayList.
+        System.out.print("Enter payment date (yyyy-MM-dd): ");
+        String dateInput = scanner.nextLine();
+
+        // Validate the date input
+        LocalDate date = null;
+        try {
+            date = LocalDate.parse(dateInput, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        } catch (Exception e) {
+            System.out.println("Invalid date format. Please use yyyy-MM-dd.");
+            return; // Exit the method if date parsing fails
+        }
+
+        // Prompt for time input
+        System.out.print("Enter payment time (HH:mm:ss): ");
+        String timeInput = scanner.nextLine();
+
+        // Validate the time input
+        LocalTime time = null;
+        try {
+            time = LocalTime.parse(timeInput, DateTimeFormatter.ofPattern("HH:mm:ss"));
+        } catch (Exception e) {
+            System.out.println("Invalid time format. Please use HH:mm:ss.");
+            return;
+        }
+
+        // Prompt for the description and vendor
+        System.out.print("Enter payment description: ");
+        String description = scanner.nextLine();
+
+        System.out.print("Enter vendor: ");
+        String vendor = scanner.nextLine();
+
+        // Prompt for the payment amount
+        System.out.print("Enter payment amount: ");
+        double amount = 0;
+        boolean validAmount = false;
+        while (!validAmount) {
+            try {
+                amount = Double.parseDouble(scanner.nextLine());
+                if (amount > 0) {
+                    validAmount = true;
+                } else {
+                    System.out.print("Amount must be a positive number. Please enter again: ");
+                }
+            } catch (NumberFormatException e) {
+                System.out.print("Invalid amount. Please enter a valid positive number: ");
+            }
+        }
+
+        // Convert the amount to a negative number, since it's a payment
+        amount = -amount;
+
+        // Create a new Transaction object with the validated inputs
+        Transaction newTransaction = new Transaction(date, time, description, vendor, amount);
+
+        // Add the new transaction to the transactions list
+        transactions.add(newTransaction);
+        System.out.println("Payment added successfully.\n");
     }
+
+
 
     private static void ledgerMenu(Scanner scanner) {
         boolean running = true;
@@ -214,6 +274,7 @@ public class FinancialTracker {
                 case "1":
                     // Generate a report for all transactions within the current month,
                     // including the date, time, description, vendor, and amount for each transaction.
+                    filterTransactionsByDate(LocalDate.now().withDayOfMonth(1),LocalDate.now());
                     break;
                 case "2":
                     // Generate a report for all transactions within the previous month,
@@ -253,6 +314,18 @@ public class FinancialTracker {
         // The method loops through the transactions list and checks each transaction's date against the date range.
         // Transactions that fall within the date range are printed to the console.
         // If no transactions fall within the date range, the method prints a message indicating that there are no results.
+        ArrayList<Transaction> dateList = new ArrayList<>();
+        for (int i = 0; i < transactions.size(); i++) {
+            LocalDate transactionDate = transactions.get(i).date();
+
+            if (!transactionDate.isBefore(startDate) && !transactionDate.isAfter(endDate)) {
+                dateList.add(transactions.get(i));
+            }
+        }
+
+        if(!dateList.isEmpty()){
+            System.out.println(formattedTable(dateList));
+        }
     }
 
     private static void filterTransactionsByVendor(String vendor) {
