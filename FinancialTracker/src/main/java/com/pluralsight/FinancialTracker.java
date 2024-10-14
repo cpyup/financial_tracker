@@ -104,8 +104,8 @@ public class FinancialTracker {
         int lineCount = 0;
         for (Transaction t : targetInventory) {
             // Alternate colors for rows
-            String color = (lineCount % 2 == 0) ? "\u001B[30;48;5;236m" : "\u001B[100;48;5;235m"; // Two neutral colors
-            String resetColor = "\u001B[0m"; // Reset color
+            String color = (lineCount % 2 == 0) ? "\u001B[30;48;5;236m" : "\u001B[100;48;5;235m";
+            String resetColor = "\u001B[0m";
 
             output.append(color);
             output.append(String.format("%-" + dateWidth + "s %-" + timeWidth + "s %-" + descriptionWidth + "s %-" + vendorWidth + "s ",
@@ -138,47 +138,56 @@ public class FinancialTracker {
         // The amount received should be a positive number, transformed to a negative number.
         // After validating the input, a new `Transaction` object should be created with the entered values.
         // The new payment should be added to the `transactions` ArrayList.
+        boolean validInput = false;
+
         System.out.print("Enter payment date (yyyy-MM-dd): ");
-        String dateInput = scanner.nextLine();
 
         // Validate the date input
-        LocalDate date;
-        try {
-            date = LocalDate.parse(dateInput, DATE_FORMATTER);
-        } catch (Exception e) {
-            System.out.println("Invalid date format. Please use yyyy-MM-dd.");
-            return; // Exit the method if date parsing fails
+        LocalDate date = null;
+        while (!validInput){
+            String dateInput = scanner.nextLine().trim();
+            try {
+                date = LocalDate.parse(dateInput, DATE_FORMATTER);
+                validInput = true;
+            } catch (Exception e) {
+                System.out.println("Invalid date format. Please use yyyy-MM-dd.");
+            }
         }
+        validInput = false;
 
         // Prompt for time input
         System.out.print("Enter payment time (HH:mm:ss): ");
-        String timeInput = scanner.nextLine();
+
 
         // Validate the time input
-        LocalTime time;
-        try {
-            time = LocalTime.parse(timeInput, TIME_FORMATTER);
-        } catch (Exception e) {
-            System.out.println("Invalid time format. Please use HH:mm:ss.");
-            return;
+        LocalTime time = null;
+        while (!validInput){
+            String timeInput = scanner.nextLine().trim();
+            try {
+                time = LocalTime.parse(timeInput, TIME_FORMATTER);
+                validInput = true;
+            } catch (Exception e) {
+                System.out.println("Invalid time format. Please use HH:mm:ss.");
+                break;
+            }
         }
+        validInput = false;
 
         // Prompt for the description and vendor
         System.out.print("Enter payment description: ");
-        String description = scanner.nextLine();
+        String description = scanner.nextLine().trim();
 
         System.out.print("Enter vendor: ");
-        String vendor = scanner.nextLine();
+        String vendor = scanner.nextLine().trim();
 
         // Prompt for the payment amount
         System.out.print("Enter payment amount: ");
         double amount = 0;
-        boolean validAmount = false;
-        while (!validAmount) {
+        while (!validInput) {
             try {
                 amount = Double.parseDouble(scanner.nextLine());
                 if (amount > 0) {
-                    validAmount = true;
+                    validInput = true;
                 } else {
                     System.out.print("Amount must be a positive number. Please enter again: ");
                 }
