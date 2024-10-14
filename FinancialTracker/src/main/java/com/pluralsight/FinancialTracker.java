@@ -105,7 +105,7 @@ public class FinancialTracker {
         int lineCount = 0;
         for (Transaction t : targetInventory) {
             // Alternate colors for rows
-            String color = (lineCount % 2 == 0) ? "\u001B[100;48;5;236m" : "\u001B[30;48;5;240m"; // Two neutral colors
+            String color = (lineCount % 2 == 0) ? "\u001B[30;48;5;236m" : "\u001B[100;48;5;235m"; // Two neutral colors
             String resetColor = "\u001B[0m"; // Reset color
 
             output.append(color);
@@ -145,7 +145,7 @@ public class FinancialTracker {
         // Validate the date input
         LocalDate date = null;
         try {
-            date = LocalDate.parse(dateInput, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            date = LocalDate.parse(dateInput, DATE_FORMATTER);
         } catch (Exception e) {
             System.out.println("Invalid date format. Please use yyyy-MM-dd.");
             return; // Exit the method if date parsing fails
@@ -158,7 +158,7 @@ public class FinancialTracker {
         // Validate the time input
         LocalTime time = null;
         try {
-            time = LocalTime.parse(timeInput, DateTimeFormatter.ofPattern("HH:mm:ss"));
+            time = LocalTime.parse(timeInput, TIME_FORMATTER);
         } catch (Exception e) {
             System.out.println("Invalid time format. Please use HH:mm:ss.");
             return;
