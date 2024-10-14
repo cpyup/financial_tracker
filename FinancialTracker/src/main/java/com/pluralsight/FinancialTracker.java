@@ -93,28 +93,33 @@ public class FinancialTracker {
         // Define fixed widths for each column
         int dateWidth = 15;
         int timeWidth = 15;
-        int descriptionWidth = 30;
-        int vendorWidth = 30;
-        int amountWidth = 6;
+        int descriptionWidth = 40;
+        int vendorWidth = 40;
+        int amountWidth = 9;
 
         // Format header
-        output.append(String.format("%-" + dateWidth + "s %-" + timeWidth + "s %-" + descriptionWidth + "s %-" + vendorWidth + "s %-" + amountWidth + "s%n",
+        output.append(String.format("\033[0;30;100m %-" + dateWidth + "s %-" + timeWidth + "s %-" + descriptionWidth + "s %-" + vendorWidth + "s %-" + amountWidth + "s\u001B[0m %n",
                 "Date", "Time", "Description", "Vendor", "Amount"));
 
         // Format the output for each transaction
+        int lineCount = 0;
         for (Transaction t : targetInventory) {
-            // Determine color based on the amount
-            String color = t.amount() < 0 ? "\u001B[30;41m" : "\u001B[30;42m"; // Red for negative, green for positive
+            // Alternate colors for rows
+            String color = (lineCount % 2 == 0) ? "\u001B[100;48;5;236m" : "\u001B[30;48;5;240m"; // Two neutral colors
             String resetColor = "\u001B[0m"; // Reset color
 
             output.append(color);
-            output.append(String.format("%-" + dateWidth + "s %-" + timeWidth + "s %-" + descriptionWidth + "s %-" + vendorWidth + "s %" + amountWidth + ".2f%n",
+            output.append(String.format("%-" + dateWidth + "s %-" + timeWidth + "s %-" + descriptionWidth + "s %-" + vendorWidth + "s ",
                     t.date().toString(),
                     t.time().toString(),
                     t.description(),
-                    t.vendor(),
-                    t.amount()));
-            output.append(resetColor);
+                    t.vendor()));
+
+            // Color the amount based on its value
+            String amountColor = (t.amount() < 0) ? "\u001B[91m" : "\u001B[92m"; // Red for negative, green for positive
+            output.append(amountColor + String.format("%-" + amountWidth + ".2f", t.amount()) + " " + resetColor+"\n");
+
+            lineCount++;
         }
 
         return output.toString();
@@ -167,6 +172,14 @@ public class FinancialTracker {
     private static void displayDeposits() {
         // This method should display a table of all deposits in the `transactions` ArrayList.
         // The table should have columns for date, time, description, vendor, and amount.
+        ArrayList<Transaction> depositList = new ArrayList<>();
+        for(int i = 0; i < transactions.size(); i++){
+            if(transactions.get(i).amount() > 0)depositList.add(transactions.get(i));
+        }
+
+        if(!depositList.isEmpty()){
+            System.out.println(formattedTable(depositList));
+        }
     }
 
     private static void displayPayments() {
