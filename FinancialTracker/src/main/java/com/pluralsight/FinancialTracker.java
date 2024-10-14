@@ -230,6 +230,9 @@ public class FinancialTracker {
                 case "5":
                     // Prompt the user to enter a vendor name, then generate a report for all transactions
                     // with that vendor, including the date, time, description, vendor, and amount for each transaction.
+                    System.out.println("Enter The Vendor Name To Search:");
+                    String vendorName = scanner.nextLine().trim();
+                    filterTransactionsByVendor(vendorName);
                     break;
                 case "6":
                     // Custom search
@@ -258,5 +261,13 @@ public class FinancialTracker {
         // The method loops through the transactions list and checks each transaction's vendor name against the specified vendor name.
         // Transactions with a matching vendor name are printed to the console.
         // If no transactions match the specified vendor name, the method prints a message indicating that there are no results.
+        ArrayList<Transaction> vendorList = new ArrayList<>();
+        for(int i = 0; i < transactions.size(); i++){
+            if(transactions.get(i).vendor().equalsIgnoreCase(vendor))vendorList.add(transactions.get(i));
+        }
+
+        if(!vendorList.isEmpty()){
+            System.out.println(formattedTable(vendorList));
+        }
     }
 }
