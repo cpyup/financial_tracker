@@ -127,39 +127,9 @@ public class FinancialTracker {
     }
 
     private static void addTransaction(Scanner scanner, boolean isPayment) {
-        // Prompt for date input
-        boolean validInput = false;
-
-        System.out.print("Enter transaction date (yyyy-MM-dd): ");
-        LocalDate date = null;
-
-        // Validate the date input
-        while (!validInput) {
-            String dateInput = scanner.nextLine().trim();
-            try {
-                date = LocalDate.parse(dateInput, DATE_FORMATTER);
-                validInput = true;
-            } catch (Exception e) {
-                System.out.println("Invalid date format. Please use yyyy-MM-dd.");
-            }
-        }
-        validInput = false;
-
-        // Prompt for time input
-        System.out.print("Enter transaction time (HH:mm:ss): ");
-        LocalTime time = null;
-
-        // Validate the time input
-        while (!validInput) {
-            String timeInput = scanner.nextLine().trim();
-            try {
-                time = LocalTime.parse(timeInput, TIME_FORMATTER);
-                validInput = true;
-            } catch (Exception e) {
-                System.out.println("Invalid time format. Please use HH:mm:ss.");
-            }
-        }
-        validInput = false;
+        // Get validated date and time inputs
+        LocalDate date = InputValidator.getValidatedDate(scanner);
+        LocalTime time = InputValidator.getValidatedTime(scanner);
 
         // Prompt for the description and vendor
         System.out.print("Enter transaction description: ");
@@ -168,21 +138,8 @@ public class FinancialTracker {
         System.out.print("Enter vendor: ");
         String vendor = scanner.nextLine().trim();
 
-        // Prompt for the amount
-        System.out.print("Enter transaction amount: ");
-        double amount = 0;
-        while (!validInput) {
-            try {
-                amount = Double.parseDouble(scanner.nextLine());
-                if (amount > 0) {
-                    validInput = true;
-                } else {
-                    System.out.print("Amount must be a positive number. Please enter again: ");
-                }
-            } catch (NumberFormatException e) {
-                System.out.print("Invalid amount. Please enter a valid positive number: ");
-            }
-        }
+        // Get validated amount input
+        double amount = InputValidator.getValidatedAmount(scanner);
 
         // Adjust the amount based on the transaction type
         if (isPayment) {
