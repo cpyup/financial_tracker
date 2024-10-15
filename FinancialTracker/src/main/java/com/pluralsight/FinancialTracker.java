@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import static com.pluralsight.DisplayManager.*;
+import static com.pluralsight.InputValidator.*;
 
 public class FinancialTracker {
 
@@ -79,8 +80,8 @@ public class FinancialTracker {
 
     private static void addTransaction(Scanner scanner, boolean isPayment) {
         // Get validated date and time inputs
-        LocalDate date = InputValidator.getValidatedDate(scanner);
-        LocalTime time = InputValidator.getValidatedTime(scanner);
+        LocalDate date = getValidatedDate(scanner);
+        LocalTime time = getValidatedTime(scanner);
 
         // Prompt for the description and vendor
         System.out.print("Enter transaction description: ");
@@ -90,7 +91,7 @@ public class FinancialTracker {
         String vendor = scanner.nextLine().trim();
 
         // Get validated amount input
-        double amount = InputValidator.getValidatedAmount(scanner);
+        Double amount = getValidatedAmount(scanner);
 
         // Adjust the amount based on the transaction type
         if (isPayment) {
@@ -133,8 +134,8 @@ public class FinancialTracker {
 
             switch (input.toUpperCase()) {
                 case "A" -> displayLedger(transactions);
-                case "D" -> displayTransactionByType(true, transactions);
-                case "P" -> displayTransactionByType(false, transactions);
+                case "D" -> filterTransactionsByType(true, transactions);
+                case "P" -> filterTransactionsByType(false, transactions);
                 case "R" -> reportsMenu(scanner);
                 case "H" -> running = false;
                 default -> System.out.println("\nInvalid option");
@@ -158,36 +159,50 @@ public class FinancialTracker {
             String input = scanner.nextLine().trim();
 
             switch (input) {
-                case "1":
-                    filterTransactionsByDate(LocalDate.now().withDayOfMonth(1), LocalDate.now(),transactions);
-                    break;
-                case "2":
-                    filterTransactionsByDate(LocalDate.now().minusMonths(1).withDayOfMonth(1),
-                            LocalDate.now().minusMonths(1).withDayOfMonth(LocalDate.now().minusMonths(1).lengthOfMonth())
-                            ,transactions);
-                    break;
-                case "3":
-                    filterTransactionsByDate(LocalDate.now().withMonth(1).withDayOfMonth(1), LocalDate.now(),transactions);
-                    break;
-                case "4":
-                    filterTransactionsByDate(LocalDate.now().minusYears(1).withMonth(1).withDayOfMonth(1),
-                            LocalDate.now().minusYears(1).withMonth(12).withDayOfMonth(31),transactions);
-                    break;
-                case "5":
+                case "1" -> filterTransactionsByDate(LocalDate.now().withDayOfMonth(1), LocalDate.now(), transactions);
+                case "2" -> filterTransactionsByDate(LocalDate.now().minusMonths(1).withDayOfMonth(1),
+                        LocalDate.now().minusMonths(1).withDayOfMonth(LocalDate.now().minusMonths(1).lengthOfMonth())
+                        , transactions);
+                case "3" ->
+                        filterTransactionsByDate(LocalDate.now().withMonth(1).withDayOfMonth(1), LocalDate.now(), transactions);
+                case "4" -> filterTransactionsByDate(LocalDate.now().minusYears(1).withMonth(1).withDayOfMonth(1),
+                        LocalDate.now().minusYears(1).withMonth(12).withDayOfMonth(31), transactions);
+                case "5" -> {
                     System.out.println("Enter The Vendor Name To Search:");
                     String vendorName = scanner.nextLine().trim();
-                    filterTransactionsByVendor(vendorName,transactions);
-                    break;
-                case "6":
+                    filterTransactionsByVendor(vendorName, transactions);
+                }
+                case "6" ->
                     // Custom search
-                    break;
-                case "0":
-                    running = false;
-                    break;
-                default:
-                    System.out.println("\nInvalid option");
-                    break;
+                        customSearchMenu(scanner, transactions);
+                case "0" -> running = false;
+                default -> System.out.println("\nInvalid option");
             }
         }
+    }
+
+    private static void customSearchMenu(Scanner scanner, ArrayList<Transaction> transactions){
+        LocalDate startDate;
+        LocalDate endDate;
+        String description = null;
+        String vendor = null;
+        Double maxAmount;
+        Double minAmount;
+
+        System.out.println("To filter for a specific value, input for the corresponding prompt\nTo ignore a filter, press 'Enter'\n");
+        System.out.println("Start Date Filter\n");
+        startDate = getValidatedDate(scanner,true);
+        System.out.println("End Date Filter\n");
+        endDate = getValidatedDate(scanner,true);
+        System.out.println("Description: ");
+        if(!scanner.nextLine().isBlank())description = scanner.nextLine();
+        System.out.println("Vendor: ");
+        if(!scanner.nextLine().isBlank())vendor = scanner.nextLine();
+        System.out.println("Maximum Amount Filter\n");
+        maxAmount = getValidatedAmount(scanner,true);
+        System.out.println("Minimum Amount Filter\n");
+        minAmount = getValidatedAmount(scanner,true);
+
+        filterTransactionsByCustom(startDate,endDate,description,vendor,minAmount,maxAmount,transactions);
     }
 }

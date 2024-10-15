@@ -8,11 +8,14 @@ import static com.pluralsight.FinancialTracker.DATE_FORMATTER;
 import static com.pluralsight.FinancialTracker.TIME_FORMATTER;
 
 public class InputValidator {
-    public static LocalDate getValidatedDate(Scanner scanner) {
+    public static LocalDate getValidatedDate(Scanner scanner,boolean isNullable) {
         LocalDate date;
         while (true) {
             System.out.print("Enter transaction date (yyyy-MM-dd): ");
             String dateInput = scanner.nextLine().trim();
+
+            if(isNullable && dateInput.isBlank())return null;
+
             try {
                 date = LocalDate.parse(dateInput, DATE_FORMATTER);
                 break;
@@ -21,6 +24,10 @@ public class InputValidator {
             }
         }
         return date;
+    }
+
+    public static LocalDate getValidatedDate(Scanner scanner){
+        return  getValidatedDate(scanner,false);
     }
 
     public static LocalTime getValidatedTime(Scanner scanner) {
@@ -38,12 +45,17 @@ public class InputValidator {
         return time;
     }
 
-    public static double getValidatedAmount(Scanner scanner) {
+    public static Double getValidatedAmount(Scanner scanner, boolean isNullable) {
         double amount;
         while (true) {
             System.out.print("Enter transaction amount: ");
+
             try {
-                amount = Double.parseDouble(scanner.nextLine());
+                String input = scanner.nextLine();
+
+                if(isNullable && input.isBlank())return null;
+
+                amount = Double.parseDouble(input);
                 if (amount > 0) {
                     break;
                 } else {
@@ -54,5 +66,9 @@ public class InputValidator {
             }
         }
         return amount;
+    }
+
+    public static Double getValidatedAmount(Scanner scanner){
+        return getValidatedAmount(scanner,false);
     }
 }

@@ -76,7 +76,7 @@ public class DisplayManager {
         }
     }
 
-    public static void displayTransactionByType(boolean isDeposit, ArrayList<Transaction> transactions) {
+    public static void filterTransactionsByType(boolean isDeposit, ArrayList<Transaction> transactions) {
         displayFilteredTransactions(transaction ->
                 (isDeposit && transaction.amount() > 0) || (!isDeposit && transaction.amount() < 0),transactions);
     }
@@ -90,5 +90,32 @@ public class DisplayManager {
 
     public static void filterTransactionsByVendor(String vendor, ArrayList<Transaction> transactions) {
         displayFilteredTransactions(transaction -> transaction.vendor().equalsIgnoreCase(vendor),transactions);
+    }
+
+    public static void filterTransactionsByCustom(LocalDate startDate, LocalDate endDate,
+                                                  String description, String vendor,
+                                                  Double minAmount, Double maxAmount,
+                                                  ArrayList<Transaction> transactions) {
+
+        displayFilteredTransactions(transaction -> {
+            LocalDate transactionDate = transaction.date();
+
+            // Check date criteria
+            boolean dateMatches = (startDate == null || !transactionDate.isBefore(startDate)) &&
+                    (endDate == null || !transactionDate.isAfter(endDate));
+
+            // Check description criteria
+            boolean descriptionMatches = description == null || transaction.description().toLowerCase().contains(description.toLowerCase());
+
+            // Check vendor criteria
+            boolean vendorMatches = vendor == null || transaction.vendor().equalsIgnoreCase(vendor);
+
+            // Check amount criteria
+            boolean amountMatches = (minAmount == null || transaction.amount() >= minAmount) &&
+                    (maxAmount == null || transaction.amount() <= maxAmount);
+
+            // Combine all conditions
+            return dateMatches && descriptionMatches && vendorMatches && amountMatches;
+        }, transactions);
     }
 }
