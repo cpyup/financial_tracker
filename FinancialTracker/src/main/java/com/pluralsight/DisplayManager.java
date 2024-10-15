@@ -1,11 +1,14 @@
 package com.pluralsight;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
 
 import static com.pluralsight.FinancialTracker.DATE_FORMATTER;
 import static com.pluralsight.FinancialTracker.TIME_FORMATTER;
 
-public class OutputFormatter {
+public class DisplayManager {
     private static final int DATE_WIDTH = 12;
     private static final int TIME_WIDTH = 10;
     private static final int DESCRIPTION_WIDTH = 40;
@@ -38,7 +41,7 @@ public class OutputFormatter {
                 RESET_COLOR);
     }
 
-    public static String formattedTable(ArrayList<Transaction> targetInventory) {
+    private static String formattedTable(ArrayList<Transaction> targetInventory) {
         if (targetInventory.isEmpty()) return "No transaction data found in file";
 
         StringBuilder output = new StringBuilder();
@@ -54,5 +57,38 @@ public class OutputFormatter {
         output.append(HEADER_COLOR).append(" ".repeat(totalPadSize)).append(RESET_COLOR);
 
         return output.toString();
+    }
+
+    public static void displayLedger(ArrayList<Transaction> transactions) {
+        System.out.println(formattedTable(transactions));
+    }
+
+    public static void displayFilteredTransactions(Predicate<Transaction> filter,ArrayList<Transaction> transactions) {
+        // Using the desired filter, iterate the list, outputting matching transactions
+        List<Transaction> filteredTransactions = transactions.stream()
+                .filter(filter)
+                .toList();
+
+        if (!filteredTransactions.isEmpty()) {
+            System.out.println(formattedTable(new ArrayList<>(filteredTransactions)));
+        } else {
+            System.out.println("No Results Found Matching Criteria.");
+        }
+    }
+
+    public static void displayTransactionByType(boolean isDeposit, ArrayList<Transaction> transactions) {
+        displayFilteredTransactions(transaction ->
+                (isDeposit && transaction.amount() > 0) || (!isDeposit && transaction.amount() < 0),transactions);
+    }
+
+    public static void filterTransactionsByDate(LocalDate startDate, LocalDate endDate, ArrayList<Transaction> transactions) {
+        displayFilteredTransactions(transaction -> {
+            LocalDate transactionDate = transaction.date();
+            return !transactionDate.isBefore(startDate) && !transactionDate.isAfter(endDate);
+        },transactions);
+    }
+
+    public static void filterTransactionsByVendor(String vendor, ArrayList<Transaction> transactions) {
+        displayFilteredTransactions(transaction -> transaction.vendor().equalsIgnoreCase(vendor),transactions);
     }
 }

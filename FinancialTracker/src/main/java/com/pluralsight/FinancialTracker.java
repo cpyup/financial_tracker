@@ -5,11 +5,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
-import java.util.function.Predicate;
 
-import static com.pluralsight.OutputFormatter.formattedTable;
+import static com.pluralsight.DisplayManager.*;
 
 public class FinancialTracker {
 
@@ -134,30 +132,13 @@ public class FinancialTracker {
             String input = scanner.nextLine().trim();
 
             switch (input.toUpperCase()) {
-                case "A" -> displayLedger();
-                case "D" -> displayTransactionByType(true);
-                case "P" -> displayTransactionByType(false);
+                case "A" -> displayLedger(transactions);
+                case "D" -> displayTransactionByType(true, transactions);
+                case "P" -> displayTransactionByType(false, transactions);
                 case "R" -> reportsMenu(scanner);
                 case "H" -> running = false;
                 default -> System.out.println("\nInvalid option");
             }
-        }
-    }
-
-    private static void displayLedger() {
-        System.out.println(formattedTable(transactions));
-    }
-
-    private static void displayFilteredTransactions(Predicate<Transaction> filter) {
-        // Using the desired filter, iterate the list, outputting matching transactions
-        List<Transaction> filteredTransactions = FinancialTracker.transactions.stream()
-                .filter(filter)
-                .toList();
-
-        if (!filteredTransactions.isEmpty()) {
-            System.out.println(formattedTable(new ArrayList<>(filteredTransactions)));
-        } else {
-            System.out.println("No Results Found Matching Criteria.");
         }
     }
 
@@ -178,23 +159,24 @@ public class FinancialTracker {
 
             switch (input) {
                 case "1":
-                    filterTransactionsByDate(LocalDate.now().withDayOfMonth(1), LocalDate.now());
+                    filterTransactionsByDate(LocalDate.now().withDayOfMonth(1), LocalDate.now(),transactions);
                     break;
                 case "2":
                     filterTransactionsByDate(LocalDate.now().minusMonths(1).withDayOfMonth(1),
-                            LocalDate.now().minusMonths(1).withDayOfMonth(LocalDate.now().minusMonths(1).lengthOfMonth()));
+                            LocalDate.now().minusMonths(1).withDayOfMonth(LocalDate.now().minusMonths(1).lengthOfMonth())
+                            ,transactions);
                     break;
                 case "3":
-                    filterTransactionsByDate(LocalDate.now().withMonth(1).withDayOfMonth(1), LocalDate.now());
+                    filterTransactionsByDate(LocalDate.now().withMonth(1).withDayOfMonth(1), LocalDate.now(),transactions);
                     break;
                 case "4":
                     filterTransactionsByDate(LocalDate.now().minusYears(1).withMonth(1).withDayOfMonth(1),
-                            LocalDate.now().minusYears(1).withMonth(12).withDayOfMonth(31));
+                            LocalDate.now().minusYears(1).withMonth(12).withDayOfMonth(31),transactions);
                     break;
                 case "5":
                     System.out.println("Enter The Vendor Name To Search:");
                     String vendorName = scanner.nextLine().trim();
-                    filterTransactionsByVendor(vendorName);
+                    filterTransactionsByVendor(vendorName,transactions);
                     break;
                 case "6":
                     // Custom search
@@ -207,21 +189,5 @@ public class FinancialTracker {
                     break;
             }
         }
-    }
-
-    private static void displayTransactionByType(boolean isDeposit) {
-        displayFilteredTransactions(transaction ->
-                (isDeposit && transaction.amount() > 0) || (!isDeposit && transaction.amount() < 0));
-    }
-
-    private static void filterTransactionsByDate(LocalDate startDate, LocalDate endDate) {
-        displayFilteredTransactions(transaction -> {
-            LocalDate transactionDate = transaction.date();
-            return !transactionDate.isBefore(startDate) && !transactionDate.isAfter(endDate);
-        });
-    }
-
-    private static void filterTransactionsByVendor(String vendor) {
-        displayFilteredTransactions(transaction -> transaction.vendor().equalsIgnoreCase(vendor));
     }
 }

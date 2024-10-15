@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Scanner;
 
+import static com.pluralsight.FinancialTracker.DATE_FORMATTER;
+import static com.pluralsight.FinancialTracker.TIME_FORMATTER;
+
 public class InputValidator {
     public static LocalDate getValidatedDate(Scanner scanner) {
         LocalDate date;
@@ -11,7 +14,7 @@ public class InputValidator {
             System.out.print("Enter transaction date (yyyy-MM-dd): ");
             String dateInput = scanner.nextLine().trim();
             try {
-                date = LocalDate.parse(dateInput, FinancialTracker.DATE_FORMATTER);
+                date = LocalDate.parse(dateInput, DATE_FORMATTER);
                 break;
             } catch (Exception e) {
                 System.out.println("Invalid date format. Please use yyyy-MM-dd.");
@@ -26,7 +29,7 @@ public class InputValidator {
             System.out.print("Enter transaction time (HH:mm:ss): ");
             String timeInput = scanner.nextLine().trim();
             try {
-                time = LocalTime.parse(timeInput, FinancialTracker.TIME_FORMATTER);
+                time = LocalTime.parse(timeInput, TIME_FORMATTER);
                 break;
             } catch (Exception e) {
                 System.out.println("Invalid time format. Please use HH:mm:ss.");
