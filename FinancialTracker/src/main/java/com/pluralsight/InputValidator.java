@@ -8,7 +8,7 @@ import static com.pluralsight.FinancialTracker.DATE_FORMATTER;
 import static com.pluralsight.FinancialTracker.TIME_FORMATTER;
 
 public class InputValidator {
-    public static LocalDate getValidatedDate(Scanner scanner,boolean isNullable) {
+    public static LocalDate getValidatedDate(Scanner scanner, boolean isNullable) {
         LocalDate date;
         while (true) {
             System.out.print("Enter transaction date (yyyy-MM-dd): ");

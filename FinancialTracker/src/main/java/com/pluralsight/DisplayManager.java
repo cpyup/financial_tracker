@@ -9,8 +9,8 @@ import static com.pluralsight.FinancialTracker.DATE_FORMATTER;
 import static com.pluralsight.FinancialTracker.TIME_FORMATTER;
 
 public class DisplayManager {
-    private static final int DATE_WIDTH = 12;
-    private static final int TIME_WIDTH = 10;
+    private static final int DATE_WIDTH = 10;
+    private static final int TIME_WIDTH = 9;
     private static final int DESCRIPTION_WIDTH = 40;
     private static final int VENDOR_WIDTH = 40;
     private static final int AMOUNT_WIDTH = 12;
@@ -20,9 +20,12 @@ public class DisplayManager {
     private static final String TABLE_COLOR_1 = "\u001B[100;48;5;237m";
     private static final String POSITIVE_COLOR = "\u001B[92m";
     private static final String NEGATIVE_COLOR = "\u001B[91m";
+    private static final String SEPARATOR_COLOR = "\u001B[48;5;235m";
+    private static final String BORDER_STRING = String.format(HEADER_COLOR+" "+RESET_COLOR);
+    private static final String COLUMN_SEPARATOR = String.format(SEPARATOR_COLOR + " " + RESET_COLOR);
 
     private static String createHeader() {
-        return String.format(HEADER_COLOR+"  %-" + DATE_WIDTH + "s %-" + TIME_WIDTH + "s %-" + DESCRIPTION_WIDTH + "s %-" + VENDOR_WIDTH + "s %" + AMOUNT_WIDTH + "s"+RESET_COLOR+"%n",
+        return String.format(BORDER_STRING + HEADER_COLOR+" %-" + DATE_WIDTH + "s  %-" + TIME_WIDTH + "s  %-" + DESCRIPTION_WIDTH + "s  %-" + VENDOR_WIDTH + "s  %" + AMOUNT_WIDTH + "s " + BORDER_STRING + "%n",
                 "Date", "Time", "Description", "Vendor", "Amount  ");
     }
 
@@ -30,15 +33,16 @@ public class DisplayManager {
         String color = isEvenRow ? TABLE_COLOR_0 : TABLE_COLOR_1;
         String amountColor = (t.amount() < 0) ? NEGATIVE_COLOR : POSITIVE_COLOR;
 
-        return String.format("%s %-" + DATE_WIDTH + "s %-" + TIME_WIDTH + "s %-" + DESCRIPTION_WIDTH + "s %-" + VENDOR_WIDTH + "s %s%" + AMOUNT_WIDTH + ".2f %s%n",
+        return String.format("%s %-" + DATE_WIDTH + "s "+COLUMN_SEPARATOR+color+" %-" + TIME_WIDTH
+                        + "s"+COLUMN_SEPARATOR+color+" %-" + DESCRIPTION_WIDTH + "s"+COLUMN_SEPARATOR+color+" %-" + VENDOR_WIDTH
+                        + "s"+COLUMN_SEPARATOR+color+"%s%" + AMOUNT_WIDTH + ".2f " + BORDER_STRING + "%n",
                 color,
                 t.date().format(DATE_FORMATTER),
                 t.time().format(TIME_FORMATTER),
                 t.description(),
                 t.vendor(),
                 amountColor,
-                t.amount(),
-                RESET_COLOR);
+                t.amount());
     }
 
     private static String formattedTable(ArrayList<Transaction> targetInventory) {
@@ -49,12 +53,13 @@ public class DisplayManager {
 
         for (int i = 0; i < targetInventory.size(); i++) {
             Transaction t = targetInventory.get(i);
+            output.append(BORDER_STRING);
             output.append(formatTransaction(t, i % 2 == 0));
         }
 
-        // Get the total padding size, plus 6 for the additional spaces
-        int totalPadSize = DATE_WIDTH + TIME_WIDTH + DESCRIPTION_WIDTH + VENDOR_WIDTH + AMOUNT_WIDTH + 6;
-        output.append(HEADER_COLOR).append(" ".repeat(totalPadSize)).append(RESET_COLOR);
+        // Get the total padding size, plus 10 for the additional spaces
+        int totalPadSize = DATE_WIDTH + TIME_WIDTH + DESCRIPTION_WIDTH + VENDOR_WIDTH + AMOUNT_WIDTH + 10;
+        output.append(BORDER_STRING).append(HEADER_COLOR).append(" ".repeat(totalPadSize)).append(RESET_COLOR).append(BORDER_STRING);
 
         return output.toString();
     }
