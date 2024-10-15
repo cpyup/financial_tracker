@@ -89,33 +89,37 @@ public class FinancialTracker {
         StringBuilder output = new StringBuilder();
 
         // Define fixed widths for each column
-        int dateWidth = 15;
-        int timeWidth = 15;
+        int dateWidth = 12;
+        int timeWidth = 10;
         int descriptionWidth = 40;
         int vendorWidth = 40;
-        int amountWidth = 9;
+        int amountWidth = 12;
 
         // Format header
-        output.append(String.format("\033[0;30;100m %-" + dateWidth + "s %-" + timeWidth + "s %-" + descriptionWidth + "s %-" + vendorWidth + "s %-" + amountWidth + "s\u001B[0m %n",
-                "Date", "Time", "Description", "Vendor", "Amount"));
+        output.append(String.format("\033[0;30;100m  %-" + dateWidth + "s %-" + timeWidth + "s %-" + descriptionWidth + "s %-" + vendorWidth + "s %" + amountWidth + "s\u001B[0m %n",
+                "Date", "Time", "Description", "Vendor", "Amount  "));
 
         // Format the output for each transaction
         int lineCount = 0;
         for (Transaction t : targetInventory) {
             // Alternate colors for rows
-            String color = (lineCount % 2 == 0) ? "\u001B[30;48;5;236m" : "\u001B[100;48;5;235m";
+            String color = (lineCount % 2 == 0) ? "\u001B[100;48;5;236m" : "\u001B[100;48;5;237m";
             String resetColor = "\u001B[0m";
 
+            // Format the date and time
+            String formattedDate = t.date().format(FinancialTracker.DATE_FORMATTER);
+            String formattedTime = t.time().format(FinancialTracker.TIME_FORMATTER);
+
             output.append(color);
-            output.append(String.format("%-" + dateWidth + "s %-" + timeWidth + "s %-" + descriptionWidth + "s %-" + vendorWidth + "s ",
-                    t.date().toString(),
-                    t.time().toString(),
+            output.append(String.format(" %-" + dateWidth + "s %-" + timeWidth + "s %-" + descriptionWidth + "s %-" + vendorWidth + "s ",
+                    formattedDate,
+                    formattedTime,
                     t.description(),
                     t.vendor()));
 
             // Color the amount based on its value
             String amountColor = (t.amount() < 0) ? "\u001B[91m" : "\u001B[92m"; // Red for negative, green for positive
-            output.append(amountColor).append(String.format("%-" + amountWidth + ".2f", t.amount())).append(" ").append(resetColor).append("\n");
+            output.append(amountColor).append(String.format("%" + amountWidth + ".2f ", t.amount())).append(resetColor).append("\n");
 
             lineCount++;
         }
