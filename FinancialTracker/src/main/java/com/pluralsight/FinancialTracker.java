@@ -1,9 +1,6 @@
 package com.pluralsight;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -197,7 +194,17 @@ public class FinancialTracker {
         System.out.println(isPayment ? "Payment added successfully.\n" : "Deposit added successfully.\n");
 
         // Add the transaction to transactions.csv
-        
+        writeToFile(newTransaction);
+    }
+
+    private static void writeToFile(Transaction transactionToAdd){
+        try{
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(FILE_NAME,true));
+            bufferedWriter.write(transactionToAdd.toString());
+            bufferedWriter.close();
+        }catch (Exception e){
+            System.out.println("Error Writing To File "+e);
+        }
     }
 
     private static void ledgerMenu(Scanner scanner) {
