@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.function.Predicate;
 
+import static com.pluralsight.OutputFormatter.formattedTable;
+
 public class FinancialTracker {
 
     private static final ArrayList<Transaction> transactions = new ArrayList<>();
@@ -77,55 +79,6 @@ public class FinancialTracker {
         }
     }
 
-    private static String formattedTable(ArrayList<Transaction> targetInventory) {
-        if(targetInventory.isEmpty())return "No transaction data found in file";
-
-        StringBuilder output = new StringBuilder();
-
-        // Define fixed widths for each column
-        int dateWidth = 12;
-        int timeWidth = 10;
-        int descriptionWidth = 40;
-        int vendorWidth = 40;
-        int amountWidth = 12;
-
-        // Getting total pad size, plus the six spaces in the formatting
-        int totalPadSize = dateWidth+timeWidth+descriptionWidth+vendorWidth+amountWidth+6;
-
-        // Format header
-        output.append(String.format("\033[0;30;100m  %-" + dateWidth + "s %-" + timeWidth + "s %-" + descriptionWidth + "s %-" + vendorWidth + "s %" + amountWidth + "s\u001B[0m %n",
-                "Date", "Time", "Description", "Vendor", "Amount  "));
-
-        // Format the output for each transaction
-        int lineCount = 0;
-        String resetColor = "\u001B[0m";
-        for (Transaction t : targetInventory) {
-            // Alternate colors for rows
-            String color = (lineCount % 2 == 0) ? "\u001B[100;48;5;236m" : "\u001B[100;48;5;237m";
-
-            // Format the date and time
-            String formattedDate = t.date().format(FinancialTracker.DATE_FORMATTER);
-            String formattedTime = t.time().format(FinancialTracker.TIME_FORMATTER);
-
-            output.append(color);
-            output.append(String.format(" %-" + dateWidth + "s %-" + timeWidth + "s %-" + descriptionWidth + "s %-" + vendorWidth + "s ",
-                    formattedDate,
-                    formattedTime,
-                    t.description(),
-                    t.vendor()));
-
-            // Color the amount based on its value
-            String amountColor = (t.amount() < 0) ? "\u001B[91m" : "\u001B[92m"; // Red for negative, green for positive
-            output.append(amountColor).append(String.format("%" + amountWidth + ".2f ", t.amount())).append(resetColor).append("\n");
-
-            lineCount++;
-        }
-        // Add a blank footer to the output string
-        output.append("\033[0;30;100m").append(" ".repeat(totalPadSize)).append(resetColor);
-
-        return output.toString();
-    }
-
     private static void addTransaction(Scanner scanner, boolean isPayment) {
         // Get validated date and time inputs
         LocalDate date = InputValidator.getValidatedDate(scanner);
@@ -143,7 +96,7 @@ public class FinancialTracker {
 
         // Adjust the amount based on the transaction type
         if (isPayment) {
-            amount = -amount; // Convert to negative for payments
+            amount = -amount;
         }
 
         // Create a new Transaction object with the validated inputs
@@ -171,7 +124,7 @@ public class FinancialTracker {
         boolean running = true;
         while (running) {
             System.out.println("Ledger");
-            System.out.println("\nChoose an option:");
+            System.out.println("Choose an option:");
             System.out.println("\tA) All");
             System.out.println("\tD) Deposits");
             System.out.println("\tP) Payments");
@@ -248,6 +201,7 @@ public class FinancialTracker {
                     break;
                 case "0":
                     running = false;
+                    break;
                 default:
                     System.out.println("\nInvalid option");
                     break;
