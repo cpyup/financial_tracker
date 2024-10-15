@@ -5,12 +5,10 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import static com.pluralsight.DisplayManager.*;
-import static com.pluralsight.DisplayManager.filterTransactionsByCustom;
-import static com.pluralsight.InputValidator.getValidatedAmount;
-import static com.pluralsight.InputValidator.getValidatedDate;
+import static com.pluralsight.InputValidator.*;
 
 public class MenuManager {
-    
+
     public static void ledgerMenu(Scanner scanner, ArrayList<Transaction> transactions) {
         boolean running = true;
         while (running) {
