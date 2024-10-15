@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
+import java.util.function.Predicate;
 
 public class FinancialTracker {
 
@@ -34,8 +34,8 @@ public class FinancialTracker {
             String input = scanner.nextLine().trim();
 
             switch (input.toUpperCase()) {
-                case "D" -> addTransaction(scanner,false);
-                case "P" -> addTransaction(scanner,true);
+                case "D" -> addTransaction(scanner, false);
+                case "P" -> addTransaction(scanner, true);
                 case "L" -> ledgerMenu(scanner);
                 case "X" -> running = false;
                 default -> System.out.println("\nInvalid option");
@@ -46,32 +46,32 @@ public class FinancialTracker {
     }
 
     public static void loadTransactions(String fileName) {
-        try(BufferedReader br = new BufferedReader(new FileReader(fileName))){
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
-            while((line = br.readLine())!=null){
+            while ((line = br.readLine()) != null) {
                 String[] values = line.split("\\|");
-                if(values.length == 5){
+                if (values.length == 5) {
                     LocalDate date = LocalDate.parse(values[0].trim());
                     LocalTime time = LocalTime.parse(values[1].trim());
                     String description = values[2].trim();
                     String vendor = values[3].trim();
                     double amount = Double.parseDouble(values[4].trim());
-                    transactions.add(new Transaction(date,time,description,vendor,amount));
+                    transactions.add(new Transaction(date, time, description, vendor, amount));
                 }
             }
 
-        }catch(IOException e){
+        } catch (IOException e) {
             System.out.println("File Doesn't Exist, Creating...");
             File newFile = new File(fileName);
 
-            try{
-                if(newFile.createNewFile()){
-                    System.out.println("File '"+ fileName +"' Successfully Created");
-                }else{
-                    System.out.println("File '"+ fileName +"' Already Exists");
+            try {
+                if (newFile.createNewFile()) {
+                    System.out.println("File '" + fileName + "' Successfully Created");
+                } else {
+                    System.out.println("File '" + fileName + "' Already Exists");
                 }
             } catch (IOException ex) {
-                System.out.println("Error Creating File "+fileName);
+                System.out.println("Error Creating File " + fileName);
                 throw new RuntimeException(ex);
             }
         }
@@ -200,13 +200,13 @@ public class FinancialTracker {
         writeToFile(newTransaction);
     }
 
-    private static void writeToFile(Transaction transactionToAdd){
-        try{
-            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(FILE_NAME,true));
+    private static void writeToFile(Transaction transactionToAdd) {
+        try {
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(FILE_NAME, true));
             bufferedWriter.write(transactionToAdd.toString());
             bufferedWriter.close();
-        }catch (Exception e){
-            System.out.println("Error Writing To File "+e);
+        } catch (Exception e) {
+            System.out.println("Error Writing To File " + e);
         }
     }
 
@@ -238,16 +238,15 @@ public class FinancialTracker {
         System.out.println(formattedTable(transactions));
     }
 
-    private static void displayTransactionByType(boolean isDeposit) {
-        // Use streams to filter the transactions
-        List<Transaction> filteredTransactions = transactions.stream()
-                .filter(transaction -> (isDeposit && transaction.amount() > 0) || (!isDeposit && transaction.amount() < 0))
-                .collect(Collectors.toList());
+    private static void displayFilteredTransactions(Predicate<Transaction> filter) {
+        // Using the desired filter, iterate the list, outputting matching transactions
+        List<Transaction> filteredTransactions = FinancialTracker.transactions.stream()
+                .filter(filter)
+                .toList();
 
-        // Display the transactions if the list is not empty
         if (!filteredTransactions.isEmpty()) {
-            System.out.println(formattedTable((ArrayList<Transaction>) filteredTransactions));
-        }else{
+            System.out.println(formattedTable(new ArrayList<>(filteredTransactions)));
+        } else {
             System.out.println("No Results Found Matching Criteria.");
         }
     }
@@ -269,30 +268,20 @@ public class FinancialTracker {
 
             switch (input) {
                 case "1":
-                    // Generate a report for all transactions within the current month,
-                    // including the date, time, description, vendor, and amount for each transaction.
-                    filterTransactionsByDate(LocalDate.now().withDayOfMonth(1),LocalDate.now());
+                    filterTransactionsByDate(LocalDate.now().withDayOfMonth(1), LocalDate.now());
                     break;
                 case "2":
-                    // Generate a report for all transactions within the previous month,
-                    // including the date, time, description, vendor, and amount for each transaction.
                     filterTransactionsByDate(LocalDate.now().minusMonths(1).withDayOfMonth(1),
                             LocalDate.now().minusMonths(1).withDayOfMonth(LocalDate.now().minusMonths(1).lengthOfMonth()));
                     break;
                 case "3":
-                    // Generate a report for all transactions within the current year,
-                    // including the date, time, description, vendor, and amount for each transaction.
                     filterTransactionsByDate(LocalDate.now().withMonth(1).withDayOfMonth(1), LocalDate.now());
                     break;
                 case "4":
-                    // Generate a report for all transactions within the previous year,
-                    // including the date, time, description, vendor, and amount for each transaction.
                     filterTransactionsByDate(LocalDate.now().minusYears(1).withMonth(1).withDayOfMonth(1),
                             LocalDate.now().minusYears(1).withMonth(12).withDayOfMonth(31));
                     break;
                 case "5":
-                    // Prompt the user to enter a vendor name, then generate a report for all transactions
-                    // with that vendor, including the date, time, description, vendor, and amount for each transaction.
                     System.out.println("Enter The Vendor Name To Search:");
                     String vendorName = scanner.nextLine().trim();
                     filterTransactionsByVendor(vendorName);
@@ -309,33 +298,19 @@ public class FinancialTracker {
         }
     }
 
+    private static void displayTransactionByType(boolean isDeposit) {
+        displayFilteredTransactions(transaction ->
+                (isDeposit && transaction.amount() > 0) || (!isDeposit && transaction.amount() < 0));
+    }
+
     private static void filterTransactionsByDate(LocalDate startDate, LocalDate endDate) {
-        ArrayList<Transaction> dateList = new ArrayList<>();
-        for (Transaction transaction : transactions) {
+        displayFilteredTransactions(transaction -> {
             LocalDate transactionDate = transaction.date();
-
-            if (!transactionDate.isBefore(startDate) && !transactionDate.isAfter(endDate)) {
-                dateList.add(transaction);
-            }
-        }
-
-        if(!dateList.isEmpty()){
-            System.out.println(formattedTable(dateList));
-        }else{
-            System.out.println("No Results Found Matching Criteria.");
-        }
+            return !transactionDate.isBefore(startDate) && !transactionDate.isAfter(endDate);
+        });
     }
 
     private static void filterTransactionsByVendor(String vendor) {
-        ArrayList<Transaction> vendorList = new ArrayList<>();
-        for (Transaction transaction : transactions) {
-            if (transaction.vendor().equalsIgnoreCase(vendor)) vendorList.add(transaction);
-        }
-
-        if(!vendorList.isEmpty()){
-            System.out.println(formattedTable(vendorList));
-        }else{
-            System.out.println("No Results Found Matching Criteria.");
-        }
+        displayFilteredTransactions(transaction -> transaction.vendor().equalsIgnoreCase(vendor));
     }
 }
