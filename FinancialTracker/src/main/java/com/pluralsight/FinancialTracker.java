@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 import static com.pluralsight.DisplayManager.*;
@@ -60,6 +61,7 @@ public class FinancialTracker {
                     transactions.add(new Transaction(date, time, description, vendor, amount));
                 }
             }
+            Collections.reverse(transactions); // Reverse load order so the newest entries are display at the top
 
         } catch (IOException e) {
             System.out.println("File Doesn't Exist, Creating...");
@@ -102,7 +104,7 @@ public class FinancialTracker {
         Transaction newTransaction = new Transaction(date, time, description, vendor, amount);
 
         // Add the new transaction to the transactions list
-        transactions.add(newTransaction);
+        transactions.add(0,newTransaction);
         System.out.println(isPayment ? "Payment added successfully.\n" : "Deposit added successfully.\n");
 
         // Add the transaction to transactions.csv

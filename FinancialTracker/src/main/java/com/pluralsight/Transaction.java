@@ -9,6 +9,6 @@ public record Transaction(LocalDate date, LocalTime time, String description, St
         String formattedDate = date.format(FinancialTracker.DATE_FORMATTER);
         String formattedTime = time.format(FinancialTracker.TIME_FORMATTER);
 
-        return String.format("%n%s|%s|%s|%s|%s", formattedDate, formattedTime, description, vendor, amount);
+        return String.format("%n%s|%s|%s|%s|%.2f", formattedDate, formattedTime, description, vendor, amount);
     }
 }
