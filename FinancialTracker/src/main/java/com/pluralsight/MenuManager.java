@@ -1,0 +1,99 @@
+package com.pluralsight;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+import static com.pluralsight.DisplayManager.*;
+import static com.pluralsight.DisplayManager.filterTransactionsByCustom;
+import static com.pluralsight.InputValidator.getValidatedAmount;
+import static com.pluralsight.InputValidator.getValidatedDate;
+
+public class MenuManager {
+    
+    public static void ledgerMenu(Scanner scanner, ArrayList<Transaction> transactions) {
+        boolean running = true;
+        while (running) {
+            System.out.println("Ledger");
+            System.out.println("Choose an option:");
+            System.out.println("\tA) All");
+            System.out.println("\tD) Deposits");
+            System.out.println("\tP) Payments");
+            System.out.println("\tR) Reports");
+            System.out.println("\tH) Home");
+
+            String input = scanner.nextLine().trim();
+
+            switch (input.toUpperCase()) {
+                case "A" -> displayLedger(transactions);
+                case "D" -> filterTransactionsByType(true, transactions);
+                case "P" -> filterTransactionsByType(false, transactions);
+                case "R" -> reportsMenu(scanner,transactions);
+                case "H" -> running = false;
+                default -> System.out.println("\nInvalid option");
+            }
+        }
+    }
+
+    private static void reportsMenu(Scanner scanner, ArrayList<Transaction> transactions) {
+        boolean running = true;
+        while (running) {
+            System.out.println("Reports");
+            System.out.println("\nChoose an option:");
+            System.out.println("\t1) Month To Date");
+            System.out.println("\t2) Previous Month");
+            System.out.println("\t3) Year To Date");
+            System.out.println("\t4) Previous Year");
+            System.out.println("\t5) Search by Vendor");
+            System.out.println("\t6) Custom Search");
+            System.out.println("\t0) Back");
+
+            String input = scanner.nextLine().trim();
+
+            switch (input) {
+                case "1" -> filterTransactionsByDate(LocalDate.now().withDayOfMonth(1), LocalDate.now(), transactions);
+                case "2" -> filterTransactionsByDate(LocalDate.now().minusMonths(1).withDayOfMonth(1),
+                        LocalDate.now().minusMonths(1).withDayOfMonth(LocalDate.now().minusMonths(1).lengthOfMonth())
+                        , transactions);
+                case "3" ->
+                        filterTransactionsByDate(LocalDate.now().withMonth(1).withDayOfMonth(1), LocalDate.now(), transactions);
+                case "4" -> filterTransactionsByDate(LocalDate.now().minusYears(1).withMonth(1).withDayOfMonth(1),
+                        LocalDate.now().minusYears(1).withMonth(12).withDayOfMonth(31), transactions);
+                case "5" -> {
+                    System.out.println("Enter The Vendor Name To Search:");
+                    String vendorName = scanner.nextLine().trim();
+                    filterTransactionsByVendor(vendorName, transactions);
+                }
+                case "6" ->
+                        customSearchMenu(scanner, transactions);
+                case "0" -> running = false;
+                default -> System.out.println("\nInvalid option");
+            }
+        }
+    }
+
+    private static void customSearchMenu(Scanner scanner, ArrayList<Transaction> transactions){
+        LocalDate startDate;
+        LocalDate endDate;
+        String description = null;
+        String vendor = null;
+        Double maxAmount;
+        Double minAmount;
+
+        System.out.println("To filter for a specific value, input for the corresponding prompt\nTo ignore a filter, press 'Enter'\n");
+        System.out.println("Start Date Filter\n");
+        startDate = getValidatedDate(scanner,true);
+        System.out.println("End Date Filter\n");
+        endDate = getValidatedDate(scanner,true);
+        System.out.println("Description: ");
+        if(!scanner.nextLine().isBlank())description = scanner.nextLine();
+        System.out.println("Vendor: ");
+        if(!scanner.nextLine().isBlank())vendor = scanner.nextLine();
+        System.out.println("Maximum Amount Filter\n");
+        maxAmount = getValidatedAmount(scanner,true);
+        System.out.println("Minimum Amount Filter\n");
+        minAmount = getValidatedAmount(scanner,true);
+
+        filterTransactionsByCustom(startDate,endDate,description,vendor,minAmount,maxAmount,transactions);
+    }
+}
