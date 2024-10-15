@@ -75,17 +75,11 @@ public class FinancialTracker {
                 throw new RuntimeException(ex);
             }
         }
-        // This method should load transactions from a file with the given file name.
-        // If the file does not exist, it should be created.
-        // The transactions should be stored in the `transactions` ArrayList.
-        // Each line of the file represents a single transaction in the following format:
-        // <date>|<time>|<description>|<vendor>|<amount>
-        // For example: 2023-04-15|10:13:25|ergonomic keyboard|Amazon|-89.50
-        // After reading all the transactions, the file should be closed.
-        // If any errors occur, an appropriate error message should be displayed.
     }
 
     private static String formattedTable(ArrayList<Transaction> targetInventory) {
+        if(targetInventory.isEmpty())return "No transaction data found in file";
+
         StringBuilder output = new StringBuilder();
 
         // Define fixed widths for each column
@@ -95,16 +89,19 @@ public class FinancialTracker {
         int vendorWidth = 40;
         int amountWidth = 12;
 
+        // Getting total pad size, plus the six spaces in the formatting
+        int totalPadSize = dateWidth+timeWidth+descriptionWidth+vendorWidth+amountWidth+6;
+
         // Format header
         output.append(String.format("\033[0;30;100m  %-" + dateWidth + "s %-" + timeWidth + "s %-" + descriptionWidth + "s %-" + vendorWidth + "s %" + amountWidth + "s\u001B[0m %n",
                 "Date", "Time", "Description", "Vendor", "Amount  "));
 
         // Format the output for each transaction
         int lineCount = 0;
+        String resetColor = "\u001B[0m";
         for (Transaction t : targetInventory) {
             // Alternate colors for rows
             String color = (lineCount % 2 == 0) ? "\u001B[100;48;5;236m" : "\u001B[100;48;5;237m";
-            String resetColor = "\u001B[0m";
 
             // Format the date and time
             String formattedDate = t.date().format(FinancialTracker.DATE_FORMATTER);
@@ -123,6 +120,8 @@ public class FinancialTracker {
 
             lineCount++;
         }
+        // Add a blank footer to the output string
+        output.append("\033[0;30;100m").append(" ".repeat(totalPadSize)).append(resetColor);
 
         return output.toString();
     }
@@ -306,11 +305,6 @@ public class FinancialTracker {
     }
 
     private static void filterTransactionsByDate(LocalDate startDate, LocalDate endDate) {
-        // This method filters the transactions by date and prints a report to the console.
-        // It takes two parameters: startDate and endDate, which represent the range of dates to filter by.
-        // The method loops through the transactions list and checks each transaction's date against the date range.
-        // Transactions that fall within the date range are printed to the console.
-        // If no transactions fall within the date range, the method prints a message indicating that there are no results.
         ArrayList<Transaction> dateList = new ArrayList<>();
         for (Transaction transaction : transactions) {
             LocalDate transactionDate = transaction.date();
@@ -328,11 +322,6 @@ public class FinancialTracker {
     }
 
     private static void filterTransactionsByVendor(String vendor) {
-        // This method filters the transactions by vendor and prints a report to the console.
-        // It takes one parameter: vendor, which represents the name of the vendor to filter by.
-        // The method loops through the transactions list and checks each transaction's vendor name against the specified vendor name.
-        // Transactions with a matching vendor name are printed to the console.
-        // If no transactions match the specified vendor name, the method prints a message indicating that there are no results.
         ArrayList<Transaction> vendorList = new ArrayList<>();
         for (Transaction transaction : transactions) {
             if (transaction.vendor().equalsIgnoreCase(vendor)) vendorList.add(transaction);
