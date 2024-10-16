@@ -11,6 +11,39 @@ public class InputValidator {
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_FORMAT);
     public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern(TIME_FORMAT);
 
+    private static boolean isValidDate(String dateString) {
+        try {
+            // Split the string into components
+            String[] parts = dateString.split("-");
+            if (parts.length != 3) {
+                return false; // Invalid format
+            }
+
+            int year = Integer.parseInt(parts[0]);
+            int month = Integer.parseInt(parts[1]);
+            int day = Integer.parseInt(parts[2]);
+
+            // Validate month
+            if (month < 1 || month > 12) {
+                return false;
+            }
+
+            int[] daysInMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+            // Check for leap year
+            if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {
+                daysInMonth[1] = 29; // February has 29 days in a leap year
+            }
+
+            // Validate day
+            return day > 0 && day <= daysInMonth[month - 1];
+        } catch (NumberFormatException e) {
+            return false; // Return false if parsing fails
+        } catch (Exception e) {
+            return false; // Handle any other unexpected exceptions
+        }
+    }
+
     /**
      * Prompts the user to enter a validated date and returns it as a {@link LocalDate} object.
      * <p>
@@ -32,12 +65,21 @@ public class InputValidator {
 
             if(isNullable && dateInput.isBlank())return null;
 
-            try {
-                date = LocalDate.parse(dateInput, DATE_FORMATTER);
-                break;
-            } catch (Exception e) {
-                System.out.println("Invalid date format. Please use yyyy-MM-dd.");
+            try{
+                if(isValidDate(dateInput)){
+                    try {
+                        date = LocalDate.parse(dateInput, DATE_FORMATTER);
+                        break;
+                    } catch (RuntimeException e) {
+                        System.out.println("Invalid date format. Please use yyyy-MM-dd.");
+                    }
+                }
+                throw new RuntimeException();
+            }catch(Exception e){
+                System.out.println("Date does not exist. Please enter a valid date.");
             }
+
+
         }
         return date;
     }
