@@ -112,7 +112,6 @@ public class DisplayManager {
         if (targetInventory.isEmpty()) return "No transaction data found in file";
 
         StringBuilder output = new StringBuilder();
-        output.append("\n");
         output.append(createHeader());
 
         for (int i = 0; i < targetInventory.size(); i++) {

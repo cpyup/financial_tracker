@@ -38,7 +38,7 @@ Collection of user stories that guided the design of my application:
 >
 >- As an indecisive user, I would like a way for me to back out of adding a new transaction at any point during the process.
 
-## Setup
+## Setup Instructions
 
 Instructions on how to set up and run the project using IntelliJ IDEA.
 
@@ -85,11 +85,14 @@ Follow these steps to get your application running within IntelliJ IDEA:
 
 ## Resources
 
-List resources such as tutorials, articles, or documentation that helped you during the project.
+Some resources that I found helpful over the course of this project:
 
 - [Streams Ref](https://stackify.com/streams-guide-java-8/)
 - [Predicate Ref](https://www.geeksforgeeks.org/java-8-predicate-with-examples/)
 
+## Project Highlights
+
+[TODO]
 
 ## Thank You
 

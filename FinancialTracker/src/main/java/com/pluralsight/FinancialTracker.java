@@ -16,9 +16,10 @@ public class FinancialTracker {
         loadTransactions(FILE_NAME, TRANSACTIONS);
         boolean running = true;
 
+        System.out.println("\nWelcome to TransactionApp!");
+
         while (running) {
-            System.out.println("\nWelcome to TransactionApp");
-            System.out.println("Choose an option:");
+            System.out.println("\nMain Menu\nChoose an option:");
             System.out.println("\tD) Add Deposit");
             System.out.println("\tP) Make Payment (Debit)");
             System.out.println("\tL) Ledger");
