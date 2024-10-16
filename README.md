@@ -73,6 +73,10 @@ Follow these steps to get your application running within IntelliJ IDEA:
 
 [TODO]
 
+## Project Highlights
+
+[TODO]
+
 ## Future Work
 
 ### Further improvements to the table formatting methods
@@ -89,10 +93,6 @@ Some resources that I found helpful over the course of this project:
 
 - [Streams Ref](https://stackify.com/streams-guide-java-8/)
 - [Predicate Ref](https://www.geeksforgeeks.org/java-8-predicate-with-examples/)
-
-## Project Highlights
-
-[TODO]
 
 ## Thank You
 

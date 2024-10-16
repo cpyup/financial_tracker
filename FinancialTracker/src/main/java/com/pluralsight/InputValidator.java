@@ -11,9 +11,20 @@ public class InputValidator {
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_FORMAT);
     public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern(TIME_FORMAT);
 
+    /**
+     * Validates a date represented as a string in the format "yyyy-MM-dd".
+     * This method checks if the given date string is in the correct format,
+     * and whether the month and day values are valid. It also takes into account
+     * leap years when validating the number of days in February.
+     *
+     * @param dateString the date string to be validated, expected to be in the format "yyyy-MM-dd"
+     * @return true if the date is valid; false otherwise
+     *
+     * @throws NullPointerException if dateString is null
+     * @throws NumberFormatException if the date string cannot be parsed into integers
+     */
     private static boolean isValidDate(String dateString) {
         try {
-            // Split the string into components
             String[] parts = dateString.split("-");
             if (parts.length != 3) {
                 return false; // Invalid format
