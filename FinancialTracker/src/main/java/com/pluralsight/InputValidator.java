@@ -2,12 +2,14 @@ package com.pluralsight;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
-import static com.pluralsight.FinancialTracker.DATE_FORMATTER;
-import static com.pluralsight.FinancialTracker.TIME_FORMATTER;
-
 public class InputValidator {
+    private static final String DATE_FORMAT = "yyyy-MM-dd";
+    private static final String TIME_FORMAT = "HH:mm:ss";
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_FORMAT);
+    public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern(TIME_FORMAT);
 
     /**
      * Prompts the user to enter a validated date and returns it as a {@link LocalDate} object.

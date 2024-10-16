@@ -5,8 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-import static com.pluralsight.FinancialTracker.DATE_FORMATTER;
-import static com.pluralsight.FinancialTracker.TIME_FORMATTER;
+import static com.pluralsight.InputValidator.*;
 
 public class DisplayManager {
     private static final int DATE_WIDTH = 10;
