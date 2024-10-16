@@ -9,6 +9,17 @@ import static com.pluralsight.InputValidator.*;
 
 public class MenuManager {
 
+    /**
+     * Displays the ledger menu and handles user interaction for viewing transactions.
+     * <p>
+     * The menu presents options for viewing all transactions, filtering by deposits
+     * or payments, generating specific reports, or returning to the home menu. The method
+     * continues to display the menu until the user chooses to return home.
+     * </p>
+     *
+     * @param scanner     a {@link Scanner} instance for reading user input
+     * @param transactions an {@link ArrayList} containing the transactions to be displayed
+     */
     public static void ledgerMenu(Scanner scanner, ArrayList<Transaction> transactions) {
         while (true) {
             System.out.println("\nLedger");
@@ -37,6 +48,18 @@ public class MenuManager {
         }
     }
 
+    /**
+     * Displays the reports menu and handles user interaction for generating various reports
+     * based on user input.
+     * <p>
+     * The menu provides options to view transactions for the current month, previous month,
+     * year to date, previous year, filtering by indicated vendor, or performing a custom search. The user
+     * can continue to select options until they choose to go back.
+     * </p>
+     *
+     * @param scanner     a {@link Scanner} instance for reading user input
+     * @param transactions an {@link ArrayList} containing the transactions to be filtered and displayed
+     */
     private static void reportsMenu(Scanner scanner, ArrayList<Transaction> transactions) {
         while (true) {
             System.out.println("\nReports");
@@ -76,6 +99,18 @@ public class MenuManager {
         }
     }
 
+    /**
+     * Displays a custom search menu that allows users to filter transactions based on
+     * various criteria such as date range, description, vendor, and amount range.
+     * <p>
+     * Users can provide specific values for each filter. If a user wishes to ignore
+     * a particular filter, they can simply press 'Enter' to skip it. The method collects
+     * the input values and then applies the filters to the list of transactions.
+     * </p>
+     *
+     * @param scanner     a {@link Scanner} instance for reading user input
+     * @param transactions an {@link ArrayList} containing the transactions to be filtered
+     */
     private static void customSearchMenu(Scanner scanner, ArrayList<Transaction> transactions){
         LocalDate startDate;
         LocalDate endDate;
