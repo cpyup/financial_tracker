@@ -10,7 +10,7 @@ This application offers an elegant and streamlined solution for tracking your cu
 
 Collection of user stories that guided the design of my application:
 
-> - As a user, I require my transaction data to be handled as safely and efficiently as possible.
+>- As a user, I require my transaction data to be handled as safely and efficiently as possible.
 >
 >- As a user, I want to load transactions from a specified file so that I can view my financial history.
 >
@@ -69,9 +69,17 @@ Follow these steps to get your application running within IntelliJ IDEA:
 - [CherryTree](https://www.giuspen.net/cherrytree/) (hierarchical note taking application, really helped me with keeping track of everything)
 - [Google](https://www.google.com/) (always and forever)
 
-## Demo
+## Display Examples
 
-[TODO]
+![Full ledger display](https://github.com/cpyup/financial_tracker/blob/main/screenshots/full_ledger_display.png?raw=true)
+
+![Deposits and payments](https://github.com/cpyup/financial_tracker/blob/main/screenshots/deposits_and_payments.png?raw=true)
+
+![Month to date and previous month](https://github.com/cpyup/financial_tracker/blob/main/screenshots/month_to_date_and_previous.png?raw=true)
+
+![Previous year and vendor search](https://github.com/cpyup/financial_tracker/blob/main/screenshots/previous_year_and_vendor_search.png?raw=true)
+
+![Custom search filters](https://github.com/cpyup/financial_tracker/blob/main/screenshots/custom_search.png?raw=true)
 
 ## Project Highlights
 
