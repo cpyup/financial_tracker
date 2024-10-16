@@ -54,8 +54,7 @@ public class MenuManager {
             switch (input) {
                 case "1" -> filterTransactionsByDate(LocalDate.now().withDayOfMonth(1), LocalDate.now(), transactions);
                 case "2" -> filterTransactionsByDate(LocalDate.now().minusMonths(1).withDayOfMonth(1),
-                        LocalDate.now().minusMonths(1).withDayOfMonth(LocalDate.now().minusMonths(1).lengthOfMonth())
-                        , transactions);
+                        LocalDate.now().minusMonths(1).withDayOfMonth(LocalDate.now().minusMonths(1).lengthOfMonth()), transactions);
                 case "3" ->
                         filterTransactionsByDate(LocalDate.now().withMonth(1).withDayOfMonth(1), LocalDate.now(), transactions);
                 case "4" -> filterTransactionsByDate(LocalDate.now().minusYears(1).withMonth(1).withDayOfMonth(1),

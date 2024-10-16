@@ -26,22 +26,26 @@ public class DisplayManager {
 
     private static String createHeader() {
         return String.format(BORDER_STRING + HEADER_COLOR+" %-" + DATE_WIDTH + "s  %-" + TIME_WIDTH + "s  %-"
-                        + DESCRIPTION_WIDTH + "s  %-" + VENDOR_WIDTH + "s  %" + AMOUNT_WIDTH + "s " + BORDER_STRING + "%n",
-                "   Date", "   Time", "               Description", "                  Vendor", "Amount   ");  // Padding to align header text with center of column
+                        + DESCRIPTION_WIDTH + "s  %-" + VENDOR_WIDTH + "s  %" + AMOUNT_WIDTH + "s    " + BORDER_STRING + "%n",
+                "   Date", "   Time", "               Description", "                  Vendor", "Amount");  // Padding to align header text with center of column
     }
 
     private static String formatTransaction(Transaction t, boolean isEvenRow) {
         String color = isEvenRow ? TABLE_COLOR_0 : TABLE_COLOR_1;
         String amountColor = (t.amount() < 0) ? NEGATIVE_COLOR : POSITIVE_COLOR;
 
-        return String.format("%s %-" + DATE_WIDTH + "s "+COLUMN_SEPARATOR+color+" %-" + TIME_WIDTH
-                        + "s"+COLUMN_SEPARATOR+color+" %-" + DESCRIPTION_WIDTH + "s"+COLUMN_SEPARATOR+color+" %-" + VENDOR_WIDTH
-                        + "s"+COLUMN_SEPARATOR+color+"%s%" + AMOUNT_WIDTH + ".2f " + BORDER_STRING + "%n",
+        return String.format("%s %-" + DATE_WIDTH + "s %s%s %-" + TIME_WIDTH
+                        + "s%s%s %-" + DESCRIPTION_WIDTH + "s %s%s %-" + VENDOR_WIDTH
+                        + "s %s%s %s%" + AMOUNT_WIDTH + ".2f " + BORDER_STRING + "%n",
                 color,
                 t.date().format(DATE_FORMATTER),
+                COLUMN_SEPARATOR,color,
                 t.time().format(TIME_FORMATTER),
+                COLUMN_SEPARATOR,color,
                 t.description(),
+                COLUMN_SEPARATOR,color,
                 t.vendor(),
+                COLUMN_SEPARATOR,color,
                 amountColor,
                 t.amount());
     }
@@ -59,8 +63,8 @@ public class DisplayManager {
             output.append(formatTransaction(t, i % 2 == 0));
         }
 
-        // Get the total padding size, plus 10 for the additional spaces
-        int totalPadSize = DATE_WIDTH + TIME_WIDTH + DESCRIPTION_WIDTH + VENDOR_WIDTH + AMOUNT_WIDTH + 10;
+        // Get the total padding size, plus 14 for the additional spaces
+        int totalPadSize = DATE_WIDTH + TIME_WIDTH + DESCRIPTION_WIDTH + VENDOR_WIDTH + AMOUNT_WIDTH + 13;
         output.append(BORDER_STRING).append(HEADER_COLOR).append(" ".repeat(totalPadSize)).append(RESET_COLOR).append(BORDER_STRING);
 
         return output.toString();
@@ -76,11 +80,8 @@ public class DisplayManager {
                 .filter(filter)
                 .toList();
 
-        if (!filteredTransactions.isEmpty()) {
-            System.out.println(formattedTable(new ArrayList<>(filteredTransactions)));
-        } else {
-            System.out.println("No Results Found Matching Criteria.");
-        }
+        System.out.println(filteredTransactions.isEmpty() ? "No Results Found Matching Criteria."
+                : formattedTable(new ArrayList<>(filteredTransactions)));
     }
 
     public static void filterTransactionsByType(boolean isDeposit, ArrayList<Transaction> transactions) {
@@ -99,10 +100,8 @@ public class DisplayManager {
         displayFilteredTransactions(transaction -> transaction.vendor().toLowerCase().contains(vendor.toLowerCase()),transactions);
     }
 
-    public static void filterTransactionsByCustom(LocalDate startDate, LocalDate endDate,
-                                                  String description, String vendor,
-                                                  Double minAmount, Double maxAmount,
-                                                  ArrayList<Transaction> transactions) {
+    public static void filterTransactionsByCustom(LocalDate startDate, LocalDate endDate, String description, String vendor,
+                                                  Double minAmount, Double maxAmount, ArrayList<Transaction> transactions) {
 
         displayFilteredTransactions(transaction -> {
             LocalDate transactionDate = transaction.date();
