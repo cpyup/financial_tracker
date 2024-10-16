@@ -10,36 +10,46 @@ import java.util.Scanner;
 import static com.pluralsight.InputValidator.*;
 
 public class TransactionManager {
+    public static final String CSV_DELIMITER = "\\|";
+
     public static void loadTransactions(String fileName, ArrayList<Transaction> transactions) {
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = br.readLine()) != null) {
-                String[] values = line.split("\\|");
+                String[] values = line.split(CSV_DELIMITER);
                 if (values.length == 5) {
-                    LocalDate date = LocalDate.parse(values[0].trim());
-                    LocalTime time = LocalTime.parse(values[1].trim());
-                    String description = values[2].trim();
-                    String vendor = values[3].trim();
-                    double amount = Double.parseDouble(values[4].trim());
-                    transactions.add(new Transaction(date, time, description, vendor, amount));
+                    transactions.add(parseTransaction(values));
                 }
             }
-            Collections.reverse(transactions); // Reverse load order so the newest entries are display at the top
+            // Reverse load order so the newest entries are displayed at the top
+            Collections.reverse(transactions);
 
         } catch (IOException e) {
             System.out.println("File Doesn't Exist, Creating...");
-            File newFile = new File(fileName);
+            createNewFile(fileName);
+        }
+    }
 
-            try {
-                if (newFile.createNewFile()) {
-                    System.out.println("File '" + fileName + "' Successfully Created");
-                } else {
-                    System.out.println("File '" + fileName + "' Already Exists");
-                }
-            } catch (IOException ex) {
-                System.out.println("Error Creating File " + fileName);
-                throw new RuntimeException(ex);
+    private static Transaction parseTransaction(String[] values){
+        LocalDate date = LocalDate.parse(values[0].trim());
+        LocalTime time = LocalTime.parse(values[1].trim());
+        String description = values[2].trim();
+        String vendor = values[3].trim();
+        double amount = Double.parseDouble(values[4].trim());
+        return new Transaction(date,time,description,vendor,amount);
+    }
+
+    private static void createNewFile(String fileName){
+        try {
+            File newFile = new File(fileName);
+            if (newFile.createNewFile()) {
+                System.out.println("File '" + fileName + "' Successfully Created");
+            } else {
+                System.out.println("File '" + fileName + "' Already Exists");
             }
+        } catch (IOException ex) {
+            System.out.println("Error Creating File " + fileName);
+            throw new RuntimeException(ex);
         }
     }
 
@@ -51,7 +61,6 @@ public class TransactionManager {
         // Prompt for the description and vendor
         System.out.print("Enter transaction description: ");
         String description = scanner.nextLine().trim();
-
         System.out.print("Enter vendor: ");
         String vendor = scanner.nextLine().trim();
 
@@ -75,12 +84,10 @@ public class TransactionManager {
     }
 
     private static void writeToFile(Transaction transactionToAdd, String targetFileName) {
-        try {
-            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(targetFileName, true));
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(targetFileName, true))){
             bufferedWriter.write(transactionToAdd.toString());
-            bufferedWriter.close();
         } catch (Exception e) {
-            System.out.println("Error Writing To File " + e);
+            System.out.println("Error Writing To File " + targetFileName + " " + e);
         }
     }
 }

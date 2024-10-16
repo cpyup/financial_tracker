@@ -56,7 +56,7 @@ public class InputValidator {
                 if(isNullable && input.isBlank())return null;
 
                 amount = Double.parseDouble(input);
-                if (amount > 0) {
+                if (amount > 0 || isNullable) {
                     break;
                 } else {
                     System.out.print("Amount must be a positive number. Please enter again: ");

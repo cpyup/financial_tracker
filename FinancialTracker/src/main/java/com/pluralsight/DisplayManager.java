@@ -27,7 +27,7 @@ public class DisplayManager {
     private static String createHeader() {
         return String.format(BORDER_STRING + HEADER_COLOR+" %-" + DATE_WIDTH + "s  %-" + TIME_WIDTH + "s  %-"
                         + DESCRIPTION_WIDTH + "s  %-" + VENDOR_WIDTH + "s  %" + AMOUNT_WIDTH + "s " + BORDER_STRING + "%n",
-                "   Date", "   Time", "               Description", "                  Vendor", "Amount   ");
+                "   Date", "   Time", "               Description", "                  Vendor", "Amount   ");  // Padding to align header text with center of column
     }
 
     private static String formatTransaction(Transaction t, boolean isEvenRow) {
@@ -96,7 +96,7 @@ public class DisplayManager {
     }
 
     public static void filterTransactionsByVendor(String vendor, ArrayList<Transaction> transactions) {
-        displayFilteredTransactions(transaction -> transaction.vendor().equalsIgnoreCase(vendor),transactions);
+        displayFilteredTransactions(transaction -> transaction.vendor().toLowerCase().contains(vendor.toLowerCase()),transactions);
     }
 
     public static void filterTransactionsByCustom(LocalDate startDate, LocalDate endDate,
@@ -115,7 +115,7 @@ public class DisplayManager {
             boolean descriptionMatches = description == null || transaction.description().toLowerCase().contains(description.toLowerCase());
 
             // Check vendor criteria
-            boolean vendorMatches = vendor == null || transaction.vendor().equalsIgnoreCase(vendor);
+            boolean vendorMatches = vendor == null || transaction.vendor().toLowerCase().contains(vendor.toLowerCase());
 
             // Check amount criteria
             boolean amountMatches = (minAmount == null || transaction.amount() >= minAmount) &&
