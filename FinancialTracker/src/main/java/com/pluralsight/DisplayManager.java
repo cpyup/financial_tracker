@@ -13,6 +13,7 @@ public class DisplayManager {
     private static final int DESCRIPTION_WIDTH = 40;
     private static final int VENDOR_WIDTH = 40;
     private static final int AMOUNT_WIDTH = 12;
+    private static final int SPACING_OFFSET = 13;
     private static final String RESET_COLOR = "\u001B[0m";
     private static final String HEADER_COLOR = "\033[0;30;100m";
     private static final String TABLE_COLOR_0 = "\u001B[100;48;5;236m";
@@ -36,7 +37,7 @@ public class DisplayManager {
     private static String createHeader() {
         return String.format(BORDER_STRING + HEADER_COLOR+" %-" + DATE_WIDTH + "s  %-" + TIME_WIDTH + "s  %-"
                         + DESCRIPTION_WIDTH + "s  %-" + VENDOR_WIDTH + "s  %" + AMOUNT_WIDTH + "s    " + BORDER_STRING + "%n",
-                "   Date", "   Time", "               Description", "                  Vendor", "Amount");  // Padding to align header text with center of column
+                "   Date", "   Time", "               Description", "                  Vendor", "Amount");  // Padding to align header text with center of columns
     }
 
     /**
@@ -101,7 +102,7 @@ public class DisplayManager {
      * <p>
      * If the provided list of transactions is empty, a message indicating that no data is found
      * is returned. Otherwise, the method constructs the table as a string by appending a header and formatting
-     * each transaction. It also adds borders and spacing for visual clarity.
+     * each transaction, adding borders and spacing for visual clarity.
      * </p>
      *
      * @param targetInventory an {@link ArrayList} of {@link Transaction} objects to be displayed
@@ -120,9 +121,9 @@ public class DisplayManager {
             output.append(formatTransaction(t, i % 2 == 0));
         }
 
-        // Get the total padding size, plus 14 for the additional spaces
-        int totalPadSize = DATE_WIDTH + TIME_WIDTH + DESCRIPTION_WIDTH + VENDOR_WIDTH + AMOUNT_WIDTH + 13;
-        output.append(BORDER_STRING).append(HEADER_COLOR).append(" ".repeat(totalPadSize)).append(RESET_COLOR).append(BORDER_STRING);
+        // Construct the footer from the total row size
+        int footerSize = DATE_WIDTH + TIME_WIDTH + DESCRIPTION_WIDTH + VENDOR_WIDTH + AMOUNT_WIDTH + SPACING_OFFSET;
+        output.append(BORDER_STRING).append(HEADER_COLOR).append(" ".repeat(footerSize)).append(RESET_COLOR).append(BORDER_STRING);
 
         return output.toString();
     }
