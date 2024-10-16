@@ -42,12 +42,26 @@ public class DisplayManager {
                 COLUMN_SEPARATOR,color,
                 t.time().format(TIME_FORMATTER),
                 COLUMN_SEPARATOR,color,
-                t.description(),
+                inputLengthValidator(t.description()),
                 COLUMN_SEPARATOR,color,
-                t.vendor(),
+                inputLengthValidator(t.vendor()),
                 COLUMN_SEPARATOR,color,
                 amountColor,
                 t.amount());
+    }
+
+    private static String inputLengthValidator(String input){
+        String truncationString = "...";
+        String output;
+
+        if(input.length() > DESCRIPTION_WIDTH){
+            output = input.substring(0,DESCRIPTION_WIDTH - truncationString.length());
+            output += truncationString;
+        }else{
+            output = input;
+        }
+
+        return output;
     }
 
     private static String formattedTable(ArrayList<Transaction> targetInventory) {
