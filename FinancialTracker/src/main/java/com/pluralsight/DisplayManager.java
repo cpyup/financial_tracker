@@ -25,8 +25,9 @@ public class DisplayManager {
     private static final String COLUMN_SEPARATOR = String.format(SEPARATOR_COLOR + " " + RESET_COLOR);
 
     private static String createHeader() {
-        return String.format(BORDER_STRING + HEADER_COLOR+" %-" + DATE_WIDTH + "s  %-" + TIME_WIDTH + "s  %-" + DESCRIPTION_WIDTH + "s  %-" + VENDOR_WIDTH + "s  %" + AMOUNT_WIDTH + "s " + BORDER_STRING + "%n",
-                "Date", "Time", "Description", "Vendor", "Amount  ");
+        return String.format(BORDER_STRING + HEADER_COLOR+" %-" + DATE_WIDTH + "s  %-" + TIME_WIDTH + "s  %-"
+                        + DESCRIPTION_WIDTH + "s  %-" + VENDOR_WIDTH + "s  %" + AMOUNT_WIDTH + "s " + BORDER_STRING + "%n",
+                "   Date", "   Time", "               Description", "                  Vendor", "Amount   ");
     }
 
     private static String formatTransaction(Transaction t, boolean isEvenRow) {
@@ -49,6 +50,7 @@ public class DisplayManager {
         if (targetInventory.isEmpty()) return "No transaction data found in file";
 
         StringBuilder output = new StringBuilder();
+        output.append("\n");
         output.append(createHeader());
 
         for (int i = 0; i < targetInventory.size(); i++) {

@@ -23,7 +23,7 @@ public class FinancialTracker {
         boolean running = true;
 
         while (running) {
-            System.out.println("Welcome to TransactionApp");
+            System.out.println("\nWelcome to TransactionApp");
             System.out.println("Choose an option:");
             System.out.println("\tD) Add Deposit");
             System.out.println("\tP) Make Payment (Debit)");
