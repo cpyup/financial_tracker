@@ -123,12 +123,19 @@ private static void displayFilteredTransactions(Predicate<Transaction> filter,Ar
 - Dynamic row counts, allowing future parameters if need be
 - Better implementation of headers/footers, namely, improving length assignments (remove magic numbers in strings) and removing manual alignment spacing in header text
 
+> Outside of that, there is still a lot of redundancy remaining between methods. Error handling needs to be massively extended, with more specific error messages added. Classes are still poorly encapsulated, likely need to be majorly refactored in a more sensible manner. Additionally, multiple desired features were never implemented:
+
+- Accessibility settings to disable green/red text (can be difficult for some to read)
+- Additional settings related to table format/display
+- External config file used for storing application settings between sessions
+
 ## Resources
 
 Some resources that I found helpful over the course of this project:
 
 - [Streams Ref](https://stackify.com/streams-guide-java-8/)
 - [Predicate Ref](https://www.geeksforgeeks.org/java-8-predicate-with-examples/)
+- [ANSI Escape](https://en.wikipedia.org/wiki/ANSI_escape_code)
 
 ## Thank You
 
