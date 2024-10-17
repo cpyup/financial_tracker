@@ -94,11 +94,7 @@ public class InputValidator {
             System.out.print("Enter transaction date (yyyy-MM-dd): ");
             String dateInput = scanner.nextLine().trim();
 
-            if (isNullable && dateInput.isBlank()) {
-                return null;
-            }
-
-            if(isExitCommand(dateInput)){
+            if (isNullable && dateInput.isBlank() || isExitCommand(dateInput)) {
                 return null;
             }
 

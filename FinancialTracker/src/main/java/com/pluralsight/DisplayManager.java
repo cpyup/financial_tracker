@@ -60,12 +60,17 @@ public class DisplayManager {
 
         return String.format("%s %-" + DATE_WIDTH + "s %s%s %-" + TIME_WIDTH
                         + "s%s%s %-" + DESCRIPTION_WIDTH + "s %s%s %-" + VENDOR_WIDTH
-                        + "s %s%s %s%" + AMOUNT_WIDTH + ".2f " + BORDER_STRING + "%n",
+                        + "s %s%s %s%" + AMOUNT_WIDTH + "s " + BORDER_STRING + "%n",
                 color, t.date().format(DATE_FORMATTER), COLUMN_SEPARATOR,
                 color, t.time().format(TIME_FORMATTER), COLUMN_SEPARATOR,
-                color, validateAndTruncate(t.description()), COLUMN_SEPARATOR,
-                color, validateAndTruncate(t.vendor()), COLUMN_SEPARATOR,
-                color, amountColor, t.amount());
+                color, validateAndTruncate(t.description(),DESCRIPTION_WIDTH), COLUMN_SEPARATOR,
+                color, validateAndTruncate(t.vendor(),VENDOR_WIDTH), COLUMN_SEPARATOR,
+                color, amountColor, validateAndTruncate(t.amount()));
+    }
+
+    private static String validateAndTruncate(Double input){
+        String value = String.format("%.2f",input);
+        return validateAndTruncate(value,AMOUNT_WIDTH);
     }
 
     /**
@@ -79,11 +84,11 @@ public class DisplayManager {
      * @param input the string to be validated and potentially truncated
      * @return a string that fits within the {@code DESCRIPTION_WIDTH}, with an ellipsis appended if truncated
      */
-    private static String validateAndTruncate(String input){
+    private static String validateAndTruncate(String input, int targetSize){
         String output;
 
-        if(input.length() > DESCRIPTION_WIDTH){
-            output = input.substring(0,DESCRIPTION_WIDTH - TRUNCATION_STRING.length());
+        if(input.length() > targetSize){
+            output = input.substring(0,targetSize - TRUNCATION_STRING.length());
             output += TRUNCATION_STRING;
         }else{
             output = input;
