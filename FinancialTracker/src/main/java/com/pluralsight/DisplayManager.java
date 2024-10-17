@@ -23,6 +23,7 @@ public class DisplayManager {
     private static final String SEPARATOR_COLOR = "\u001B[48;5;235m";
     private static final String BORDER_STRING = String.format(HEADER_COLOR+" "+RESET_COLOR);
     private static final String COLUMN_SEPARATOR = String.format(SEPARATOR_COLOR + " " + RESET_COLOR);
+    private static final String TABLE_TITLE = "\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t";
 
     /**
      * Creates a formatted header string for displaying transaction data.
@@ -123,6 +124,7 @@ public class DisplayManager {
         // Construct the footer from the total row size
         int footerSize = DATE_WIDTH + TIME_WIDTH + DESCRIPTION_WIDTH + VENDOR_WIDTH + AMOUNT_WIDTH + SPACING_OFFSET;
         output.append(BORDER_STRING).append(HEADER_COLOR).append(" ".repeat(footerSize)).append(RESET_COLOR).append(BORDER_STRING);
+        output.append("\nPress Enter To Continue");
 
         return output.toString();
     }
@@ -138,6 +140,7 @@ public class DisplayManager {
      * @param transactions an {@link ArrayList} of {@link Transaction} objects to be displayed
      */
     public static void displayLedger(ArrayList<Transaction> transactions) {
+        System.out.println(TABLE_TITLE+"FULL LEDGER TABLE");
         System.out.println(formattedTable(transactions));
     }
 
@@ -153,10 +156,12 @@ public class DisplayManager {
      * @param filter a {@link Predicate} used to filter the transactions
      * @param transactions an {@link ArrayList} of {@link Transaction} objects to be filtered and displayed
      */
-    private static void displayFilteredTransactions(Predicate<Transaction> filter,ArrayList<Transaction> transactions) {
+    private static void displayFilteredTransactions(Predicate<Transaction> filter,ArrayList<Transaction> transactions,String tableTitle) {
         List<Transaction> filteredTransactions = transactions.stream()
                 .filter(filter)
                 .toList();
+
+        System.out.println(tableTitle);
 
         System.out.println(filteredTransactions.isEmpty() ? "No Results Found Matching Criteria."
                 : formattedTable(new ArrayList<>(filteredTransactions)));
@@ -167,7 +172,7 @@ public class DisplayManager {
      * <p>
      * The method determines whether to filter for deposits (positive amounts) or payments
      * (negative amounts) based on the {@code isDeposit} flag. It then calls
-     * {@link #displayFilteredTransactions(Predicate, ArrayList)} to display the matching
+     * {@link #displayFilteredTransactions(Predicate, ArrayList, String)} to display the matching
      * transactions.
      * </p>
      *
@@ -175,8 +180,9 @@ public class DisplayManager {
      * @param transactions an {@link ArrayList} of {@link Transaction} objects to be filtered and displayed
      */
     public static void filterTransactionsByType(boolean isDeposit, ArrayList<Transaction> transactions) {
+        String tableTitle = TABLE_TITLE+((isDeposit) ? "DEPOSITS" : "PAYMENTS")+" TABLE";
         displayFilteredTransactions(transaction ->
-                (isDeposit && transaction.amount() > 0) || (!isDeposit && transaction.amount() < 0),transactions);
+                (isDeposit && transaction.amount() > 0) || (!isDeposit && transaction.amount() < 0),transactions,tableTitle);
     }
 
     /**
@@ -184,7 +190,7 @@ public class DisplayManager {
      * <p>
      * The method uses the provided start and end dates to filter transactions, returning
      * only those that occur within the specified range (inclusive). It then calls
-     * {@link #displayFilteredTransactions(Predicate, ArrayList)} to display the matching
+     * {@link #displayFilteredTransactions(Predicate, ArrayList, String)} to display the matching
      * transactions.
      * </p>
      *
@@ -193,10 +199,11 @@ public class DisplayManager {
      * @param transactions an {@link ArrayList} of {@link Transaction} objects to be filtered and displayed
      */
     public static void filterTransactionsByDate(LocalDate startDate, LocalDate endDate, ArrayList<Transaction> transactions) {
+        String tableTitle = TABLE_TITLE+startDate+" TO "+endDate;
         displayFilteredTransactions(transaction -> {
             LocalDate transactionDate = transaction.date();
             return !transactionDate.isBefore(startDate) && !transactionDate.isAfter(endDate);
-        },transactions);
+        },transactions,tableTitle);
     }
 
     /**
@@ -204,7 +211,7 @@ public class DisplayManager {
      * <p>
      * The method uses the provided vendor name to filter transactions, returning only
      * those that contain the specified string in vendor name (case-insensitive). It then calls
-     * {@link #displayFilteredTransactions(Predicate, ArrayList)} to display the matching
+     * {@link #displayFilteredTransactions(Predicate, ArrayList, String)} to display the matching
      * transactions.
      * </p>
      *
@@ -212,7 +219,9 @@ public class DisplayManager {
      * @param transactions an {@link ArrayList} of {@link Transaction} objects to be filtered and displayed
      */
     public static void filterTransactionsByVendor(String vendor, ArrayList<Transaction> transactions) {
-        displayFilteredTransactions(transaction -> transaction.vendor().toLowerCase().contains(vendor.toLowerCase()),transactions);
+        String tableTitle = TABLE_TITLE+"VENDOR: "+vendor.toUpperCase();
+        displayFilteredTransactions(transaction -> transaction.vendor().toLowerCase().contains(vendor.toLowerCase()),
+                transactions,tableTitle);
     }
 
     /**
@@ -221,7 +230,7 @@ public class DisplayManager {
      * <p>
      * The method allows for filtering transactions based on specified criteria. Each criterion
      * can be ignored by passing {@code null} for date, description, vendor, or amount limits.
-     * It then calls {@link #displayFilteredTransactions(Predicate, ArrayList)} to display the
+     * It then calls {@link #displayFilteredTransactions(Predicate, ArrayList, String)} to display the
      * matching transactions.
      * </p>
      *
@@ -235,6 +244,7 @@ public class DisplayManager {
      */
     public static void filterTransactionsByCustom(LocalDate startDate, LocalDate endDate, String description, String vendor,
                                                   Double minAmount, Double maxAmount, ArrayList<Transaction> transactions) {
+        String tableTitle = TABLE_TITLE+"CUSTOM SEARCH";
 
         displayFilteredTransactions(transaction -> {
             LocalDate transactionDate = transaction.date();
@@ -255,6 +265,6 @@ public class DisplayManager {
 
             // Combine all conditions
             return dateMatches && descriptionMatches && vendorMatches && amountMatches;
-        }, transactions);
+        }, transactions,tableTitle);
     }
 }

@@ -20,7 +20,7 @@ public class MenuManager {
      * @param scanner     a {@link Scanner} instance for reading user input
      * @param transactions an {@link ArrayList} containing the transactions to be displayed
      */
-    public static void ledgerMenu(Scanner scanner, ArrayList<Transaction> transactions) {
+    public static void displayLedgerMenu(Scanner scanner, ArrayList<Transaction> transactions) {
         while (true) {
             System.out.println("\nLedger Menu");
             System.out.println("Choose an option:");
@@ -34,24 +34,18 @@ public class MenuManager {
 
             switch (input.toUpperCase()) {
                 case "A" -> {
-                    System.out.println("\n\t\t\t\t\t\t\t\t\t\t\t\t\t\tFULL LEDGER TABLE");
                     displayLedger(transactions);
-                    System.out.println("Press Enter To Continue");
                     scanner.nextLine();
                 }
                 case "D" -> {
-                    System.out.println("\n\t\t\t\t\t\t\t\t\t\t\t\t\t\tDEPOSITS TABLE");
                     filterTransactionsByType(true, transactions);
-                    System.out.println("Press Enter To Continue");
                     scanner.nextLine();
                 }
                 case "P" -> {
-                    System.out.println("\n\t\t\t\t\t\t\t\t\t\t\t\t\t\tPAYMENTS TABLE");
                     filterTransactionsByType(false, transactions);
-                    System.out.println("Press Enter To Continue");
                     scanner.nextLine();
                 }
-                case "R" -> reportsMenu(scanner,transactions);
+                case "R" -> displayReportsMenu(scanner,transactions);
                 case "H" -> {
                     return;
                 }
@@ -72,7 +66,7 @@ public class MenuManager {
      * @param scanner     a {@link Scanner} instance for reading user input
      * @param transactions an {@link ArrayList} containing the transactions to be filtered and displayed
      */
-    private static void reportsMenu(Scanner scanner, ArrayList<Transaction> transactions) {
+    private static void displayReportsMenu(Scanner scanner, ArrayList<Transaction> transactions) {
         while (true) {
             System.out.println("\nReports Menu");
             System.out.println("Choose an option:");
@@ -87,38 +81,23 @@ public class MenuManager {
             String input = scanner.nextLine().trim();
 
             switch (input) {
-                case "1" -> {
-                    System.out.println("\n\t\t\t\t\t\t\t\t\t\t\t\t\t\tMONTH TO DATE TABLE");
-                    filterTransactionsByDate(LocalDate.now().withDayOfMonth(1), LocalDate.now(), transactions);
-                }
-                case "2" ->{
-                    System.out.println("\n\t\t\t\t\t\t\t\t\t\t\t\t\tPREVIOUS MONTH TABLE");
-                    filterTransactionsByDate(LocalDate.now().minusMonths(1).withDayOfMonth(1),
-                            LocalDate.now().minusMonths(1).withDayOfMonth(LocalDate.now().minusMonths(1).lengthOfMonth()), transactions);
-                }
-
-                case "3" -> {
-                    System.out.println("\n\t\t\t\t\t\t\t\t\t\t\t\t\t\tYEAR TO DATE TABLE");
-                    filterTransactionsByDate(LocalDate.now().withMonth(1).withDayOfMonth(1), LocalDate.now(), transactions);
-                }
-                case "4" -> {
-                    System.out.println("\n\t\t\t\t\t\t\t\t\t\t\t\t\t\tPREVIOUS YEAR TABLE");
-                    filterTransactionsByDate(LocalDate.now().minusYears(1).withMonth(1).withDayOfMonth(1),
-                        LocalDate.now().minusYears(1).withMonth(12).withDayOfMonth(31), transactions);
-                }
+                case "1" -> filterTransactionsByDate(LocalDate.now().withDayOfMonth(1), LocalDate.now(), transactions);
+                case "2" -> filterTransactionsByDate(LocalDate.now().minusMonths(1).withDayOfMonth(1),
+                        LocalDate.now().minusMonths(1).withDayOfMonth(LocalDate.now().minusMonths(1).lengthOfMonth()), transactions);
+                case "3" -> filterTransactionsByDate(LocalDate.now().withMonth(1).withDayOfMonth(1), LocalDate.now(), transactions);
+                case "4" -> filterTransactionsByDate(LocalDate.now().minusYears(1).withMonth(1).withDayOfMonth(1),
+                    LocalDate.now().minusYears(1).withMonth(12).withDayOfMonth(31), transactions);
                 case "5" -> {
                     System.out.println("Enter The Vendor Name To Search: ");
                     String vendorName = scanner.nextLine().trim();
-                    System.out.println("\n\t\t\t\t\t\t\t\t\t\t\t\t\t\tVENDOR SEARCH: "+vendorName.toUpperCase());
                     filterTransactionsByVendor(vendorName, transactions);
                 }
-                case "6" ->customSearchMenu(scanner, transactions);
+                case "6" -> displayCustomSearchMenu(scanner, transactions);
                 case "0" -> {
                     return;
                 }
                 default -> System.out.println("\nInvalid option");
             }
-            System.out.println("Press Enter To Continue");
             scanner.nextLine();
         }
     }
@@ -135,7 +114,7 @@ public class MenuManager {
      * @param scanner     a {@link Scanner} instance for reading user input
      * @param transactions an {@link ArrayList} containing the transactions to be filtered
      */
-    private static void customSearchMenu(Scanner scanner, ArrayList<Transaction> transactions){
+    private static void displayCustomSearchMenu(Scanner scanner, ArrayList<Transaction> transactions){
         LocalDate startDate;
         LocalDate endDate;
         String description = null;
@@ -165,7 +144,6 @@ public class MenuManager {
         System.out.println("\nMinimum Amount Filter");
         minAmount = getValidatedAmount(scanner,true);
 
-        System.out.println("\n\t\t\t\t\t\t\t\t\t\t\t\t\t\tCUSTOM SEARCH");
         filterTransactionsByCustom(startDate,endDate,description,vendor,minAmount,maxAmount,transactions);
     }
 }

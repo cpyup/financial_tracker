@@ -15,7 +15,7 @@ class TransactionManagerTest {
     void loadTransactions_properFile() {
         String testFileName = "transactions.csv";
         ArrayList<Transaction> testArray = new ArrayList<>();
-        TransactionManager.loadTransactions(testFileName,testArray);
+        TransactionManager.loadTransactionsFromFile(testFileName,testArray);
 
         assertFalse(testArray.isEmpty());
     }
@@ -25,7 +25,7 @@ class TransactionManagerTest {
         String testFileName = "non_existing_file.txt";
         ArrayList<Transaction> testArray = new ArrayList<>();
 
-        TransactionManager.loadTransactions(testFileName,testArray);
+        TransactionManager.loadTransactionsFromFile(testFileName,testArray);
 
         // Check if the file has been created
         File file = new File(testFileName);

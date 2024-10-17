@@ -10,7 +10,7 @@ import java.util.Scanner;
 import static com.pluralsight.InputValidator.*;
 
 public class TransactionManager {
-    public static final String CSV_DELIMITER = "\\|";
+    private static final String CSV_DELIMITER = "\\|";
 
     /**
      * Loads transactions from a specified CSV file and adds them to the provided list.
@@ -32,7 +32,7 @@ public class TransactionManager {
      * @param fileName the name of the file from which to load transactions
      * @param transactions the list to which loaded transactions will be added
      */
-    public static void loadTransactions(String fileName, ArrayList<Transaction> transactions) {
+    public static void loadTransactionsFromFile(String fileName, ArrayList<Transaction> transactions) {
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -129,7 +129,7 @@ public class TransactionManager {
      */
     public static void addTransaction(Scanner scanner, boolean isPayment, ArrayList<Transaction> transactions, String targetFileName) {
         String verbiage = (isPayment) ? "Payment" : "Deposit";
-        System.out.println(verbiage+" Adding Menu\nType 'Exit' To Return Home\n");
+        System.out.println("\n"+verbiage+" Adding Menu\nType 'Exit' To Return Home\n");
         // Get validated date and time inputs
         LocalDate date = getValidatedDate(scanner);
         if(date == null)return;

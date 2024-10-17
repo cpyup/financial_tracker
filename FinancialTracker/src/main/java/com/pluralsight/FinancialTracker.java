@@ -13,7 +13,7 @@ public class FinancialTracker {
     public static final Scanner SCANNER = new Scanner(System.in);
 
     public static void main(String[] args) {
-        loadTransactions(FILE_NAME, TRANSACTIONS);
+        loadTransactionsFromFile(FILE_NAME, TRANSACTIONS);
         boolean running = true;
 
         System.out.println("\nWelcome to TransactionApp!");
@@ -30,7 +30,7 @@ public class FinancialTracker {
             switch (input.toUpperCase()) {
                 case "D" -> addTransaction(SCANNER, false, TRANSACTIONS, FILE_NAME);
                 case "P" -> addTransaction(SCANNER, true, TRANSACTIONS, FILE_NAME);
-                case "L" -> ledgerMenu(SCANNER, TRANSACTIONS);
+                case "L" -> displayLedgerMenu(SCANNER, TRANSACTIONS);
                 case "X" -> running = false;
                 default -> System.out.println("\nInvalid option");
             }
