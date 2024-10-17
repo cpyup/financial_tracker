@@ -24,6 +24,7 @@ public class DisplayManager {
     private static final String BORDER_STRING = String.format(HEADER_COLOR+" "+RESET_COLOR);
     private static final String COLUMN_SEPARATOR = String.format(SEPARATOR_COLOR + " " + RESET_COLOR);
     private static final String TABLE_TITLE = "\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t";
+    private static final String TRUNCATION_STRING = "...";
 
     /**
      * Creates a formatted header string for displaying transaction data.
@@ -60,17 +61,11 @@ public class DisplayManager {
         return String.format("%s %-" + DATE_WIDTH + "s %s%s %-" + TIME_WIDTH
                         + "s%s%s %-" + DESCRIPTION_WIDTH + "s %s%s %-" + VENDOR_WIDTH
                         + "s %s%s %s%" + AMOUNT_WIDTH + ".2f " + BORDER_STRING + "%n",
-                color,
-                t.date().format(DATE_FORMATTER),
-                COLUMN_SEPARATOR,color,
-                t.time().format(TIME_FORMATTER),
-                COLUMN_SEPARATOR,color,
-                inputLengthValidator(t.description()),
-                COLUMN_SEPARATOR,color,
-                inputLengthValidator(t.vendor()),
-                COLUMN_SEPARATOR,color,
-                amountColor,
-                t.amount());
+                color, t.date().format(DATE_FORMATTER), COLUMN_SEPARATOR,
+                color, t.time().format(TIME_FORMATTER), COLUMN_SEPARATOR,
+                color, validateAndTruncate(t.description()), COLUMN_SEPARATOR,
+                color, validateAndTruncate(t.vendor()), COLUMN_SEPARATOR,
+                color, amountColor, t.amount());
     }
 
     /**
@@ -84,13 +79,12 @@ public class DisplayManager {
      * @param input the string to be validated and potentially truncated
      * @return a string that fits within the {@code DESCRIPTION_WIDTH}, with an ellipsis appended if truncated
      */
-    private static String inputLengthValidator(String input){
-        String truncationString = "...";
+    private static String validateAndTruncate(String input){
         String output;
 
         if(input.length() > DESCRIPTION_WIDTH){
-            output = input.substring(0,DESCRIPTION_WIDTH - truncationString.length());
-            output += truncationString;
+            output = input.substring(0,DESCRIPTION_WIDTH - TRUNCATION_STRING.length());
+            output += TRUNCATION_STRING;
         }else{
             output = input;
         }
@@ -145,7 +139,7 @@ public class DisplayManager {
     }
 
     /**
-     * Displays transactions that match a specified filter criteria.
+     * Returns a string representing the filtered array as a fully formatted table, ready to display.
      * <p>
      * The method applies the provided {@link Predicate} to the list of transactions,
      * filtering out those that do not match. It then sends the filtered results to
@@ -157,14 +151,12 @@ public class DisplayManager {
      * @param transactions an {@link ArrayList} of {@link Transaction} objects to be filtered and displayed
      */
     private static void displayFilteredTransactions(Predicate<Transaction> filter,ArrayList<Transaction> transactions,String tableTitle) {
-        List<Transaction> filteredTransactions = transactions.stream()
+        List<Transaction> filteredTransactions = transactions.stream()  // Checking for entries matching indicated filters
                 .filter(filter)
                 .toList();
 
-        System.out.println(tableTitle);
-
-        System.out.println(filteredTransactions.isEmpty() ? "No Results Found Matching Criteria."
-                : formattedTable(new ArrayList<>(filteredTransactions)));
+        System.out.println(filteredTransactions.isEmpty() ? "\nNo Results Found Matching Criteria.\nPress Enter To Continue"
+                : tableTitle+"\n"+formattedTable(new ArrayList<>(filteredTransactions)));
     }
 
     /**

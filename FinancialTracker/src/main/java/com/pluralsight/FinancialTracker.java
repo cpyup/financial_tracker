@@ -18,7 +18,7 @@ public class FinancialTracker {
 
         System.out.println("\nWelcome to TransactionApp!");
 
-        while (running) {
+        while (running) {  // Handle I/O for the main menu
             System.out.println("\nMain Menu\nChoose an option:");
             System.out.println("\tD) Add Deposit");
             System.out.println("\tP) Make Payment (Debit)");

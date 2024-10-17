@@ -71,7 +71,7 @@ public class InputValidator {
         }
     }
 
-    private static boolean checkForEscape(String input){
+    private static boolean isExitCommand(String input){
         return input.equalsIgnoreCase("exit");
     }
 
@@ -98,7 +98,7 @@ public class InputValidator {
                 return null;
             }
 
-            if(checkForEscape(dateInput)){
+            if(isExitCommand(dateInput)){
                 return null;
             }
 
@@ -152,7 +152,7 @@ public class InputValidator {
             System.out.print("Enter transaction time (HH:mm:ss): ");
             String timeInput = scanner.nextLine().trim();
 
-            if(checkForEscape(timeInput)){
+            if(isExitCommand(timeInput)){
                 return null;
             }
 
