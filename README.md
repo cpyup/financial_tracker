@@ -68,6 +68,7 @@ Follow these steps to get your application running within IntelliJ IDEA:
 - [Notepad++](https://notepad-plus-plus.org/) (script edits, README.md creation)
 - [CherryTree](https://www.giuspen.net/cherrytree/) (hierarchical note taking application, really helped me with keeping track of everything)
 - [Google](https://www.google.com/) (always and forever)
+- [Makeareadme](https://www.makeareadme.com/) (visualizing readme)
 
 ## Display Examples
 
@@ -85,7 +86,27 @@ Follow these steps to get your application running within IntelliJ IDEA:
 
 ## Project Highlights
 
-[TODO]
+> While the formatted table output seems like the most obvious highlight, it is actually my most disliked part of this project. I ended up spending too much time focusing on the visual aspects of it, and was unable to dedicate enough to having it perform as originally intended. What I think is the most interesting part of the project is how I ended up handling table filters. Before starting custom searches, I did a large refactor on my filtration methods, as the code was a big mess at that point, with large methods constructed of repetitive code. During my research, I learned about predicates and was able to use them to massively reduce the redundancy in a few very clean, encapsulated methods. Example below:
+
+```java
+// This method constructs the desired filter criteria based on boolean value then passes it to the method below
+public static void filterTransactionsByType(boolean isDeposit, ArrayList<Transaction> transactions) {
+        displayFilteredTransactions(transaction ->
+                (isDeposit && transaction.amount() > 0) || (!isDeposit && transaction.amount() < 0),transactions);
+    }
+```
+
+```java
+// This method receives generic filters and applies them to the array, calling to display the results
+private static void displayFilteredTransactions(Predicate<Transaction> filter,ArrayList<Transaction> transactions) {
+        List<Transaction> filteredTransactions = transactions.stream()
+                .filter(filter)
+                .toList();
+
+        System.out.println(filteredTransactions.isEmpty() ? "No Results Found Matching Criteria."
+                : formattedTable(new ArrayList<>(filteredTransactions)));
+    }
+```
 
 ## Future Work
 
@@ -95,7 +116,7 @@ Follow these steps to get your application running within IntelliJ IDEA:
 
 - Dynamically sized columns in table
 - Dynamic row counts, allowing future parameters if need be
-- Better implementation of headers/footers, namely, improving length assignments (remove magic numbers in strings) and removing manual alignment spacing in strings
+- Better implementation of headers/footers, namely, improving length assignments (remove magic numbers in strings) and removing manual alignment spacing in header text
 
 ## Resources
 

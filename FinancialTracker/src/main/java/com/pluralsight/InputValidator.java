@@ -71,6 +71,10 @@ public class InputValidator {
         }
     }
 
+    private static boolean checkForEscape(String input){
+        return input.equalsIgnoreCase("exit");
+    }
+
     /**
      * Prompts the user to enter a validated date and returns it as a {@link LocalDate} object.
      * <p>
@@ -91,6 +95,10 @@ public class InputValidator {
             String dateInput = scanner.nextLine().trim();
 
             if (isNullable && dateInput.isBlank()) {
+                return null;
+            }
+
+            if(checkForEscape(dateInput)){
                 return null;
             }
 
@@ -143,6 +151,11 @@ public class InputValidator {
         while (true) {
             System.out.print("Enter transaction time (HH:mm:ss): ");
             String timeInput = scanner.nextLine().trim();
+
+            if(checkForEscape(timeInput)){
+                return null;
+            }
+
             try {
                 time = LocalTime.parse(timeInput, TIME_FORMATTER);
                 break;

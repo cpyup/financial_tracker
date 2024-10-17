@@ -128,9 +128,13 @@ public class TransactionManager {
      * @param targetFileName the name of the file to which the transaction will be saved
      */
     public static void addTransaction(Scanner scanner, boolean isPayment, ArrayList<Transaction> transactions, String targetFileName) {
+        String verbiage = (isPayment) ? "Payment" : "Deposit";
+        System.out.println(verbiage+" Adding Menu\nType 'Exit' To Return Home\n");
         // Get validated date and time inputs
         LocalDate date = getValidatedDate(scanner);
+        if(date == null)return;
         LocalTime time = getValidatedTime(scanner);
+        if(time == null)return;
 
         // Prompt for the description and vendor
         System.out.print("Enter transaction description: ");
