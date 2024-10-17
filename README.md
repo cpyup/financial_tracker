@@ -6,6 +6,10 @@ This Java CLI application tracks user transactions and displays them in an easy 
 
 This application offers an elegant and streamlined solution for tracking your current expenses and income, allowing you to maintain a better overall grasp on your finances.
 
+### Class Diagram
+
+![Class Diagram](//www.plantuml.com/plantuml/png/jLTHRwGs47xFh_3ZhYwfsjUgEfq3veAqm0gSzA6gLZwOx5arDh9DSgkg_xruMJP66mgvNFS5rlw-RsRicR7vP2pJjgt5rLN3oh_O7b2fwfyQqMec3Dz_jUZlAzJzIi6CGH6NJ9QS2QexDEZJfFlTe4xAyX8zTXY1iDRiiE76_jP1fM6bvKf-H3J7QO436cTfCKKjhEPoZw9uGtOfJiWahcHIWaP5WDEKv6VO-UK3gXcNgrxlZpyHqtkpFix-S-K5vJcOCCdsBgmPtuBYOHUIJPp4z5N30-b9yGe9nIhFXecqgYCkuEHOfomWPJLSJosQzSZhIyyyB6gODk0Dl0J_n4GBOxhdOwc1MKZX-JN7rXE1iQhoJGtxOVhdDVgYb00c4JTRTgX1saKHNW-BR9dUWuq69oOyVzRS0bL7lprDNv8gN5LJifVva81ipuam4Nh5JIEwIA3gK8vm4VrtRgQldaEZj3N_btpG6glg0fWklxxJncZzmbv-jfQuj2Z4bEn-ZqDwzrye6YSBK24fWZpUkjuo3tuWQPZbypYSPFSfdSSLMnp4wUTT5aK5eJFj8oSTPXTacooVGTuH799y4PJYsmtfaRkVtu3zPGQxpOgOnWzaaHCf-OmNWmkonJccsRBuRhFSBKL1yswTPx2TtdsIxWO3ovQEndH3vf3vVHfWbs9JZWp8lgFU0Qj0hzQJi4UbQsQzyXetCR-9aYUGkNgUrdfYWbVC0fOLrQqicJstSYwRrivvOQ6Yx8k0rKJTzvqpbfqVLkd3UablNBs_JqLSMD0mEaDNssw0kmZ7iez7x1lF6HSpvLPC7dIzgc__za0F3QnUDYU4HXc-x8HxYvdGRU96bKouDmVNrhrTevT1a9Lx_d3R3vsmqgiXkux_VhYH_XHQ7EB9cGfCgNdZDFenpy5GjTs6effBNAjMsfSHzgqV-TwJBNPLzD1NcPgz9VQ7MvJb2QOpI1ed5yWFOwGBd_8QebEfQb-UadmnppVcymRFl8vp3DK9zEGX4roFwL_NYzXlv95lt0Qghfci9jhN4AAN87iODWPEDgTlesahXAlvTmbEaIclnsGtC4yUSjHdzicw99Btw9tpt3qll_1kRZwERiI_ejQ0cSPwzNH9kPpjIUF2yWdEz3pIGL-5Z--Ydh0tCwFThSmda9NxHluN)
+
 ## User Stories
 
 Collection of user stories that guided the design of my application:
@@ -68,6 +72,7 @@ Follow these steps to get your application running within IntelliJ IDEA:
 - [Notepad++](https://notepad-plus-plus.org/) (script edits, README.md creation)
 - [CherryTree](https://www.giuspen.net/cherrytree/) (hierarchical note taking application, really helped me with keeping track of everything)
 - [Google](https://www.google.com/) (always and forever)
+- [PlantUML](https://www.plantuml.com/) (for class diagram)
 - [Makeareadme](https://www.makeareadme.com/) (visualizing readme)
 
 ## Display Examples
