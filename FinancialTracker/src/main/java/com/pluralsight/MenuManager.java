@@ -10,51 +10,6 @@ import static com.pluralsight.InputValidator.*;
 public class MenuManager {
 
     /**
-     * Displays the ledger menu and handles user interaction for viewing transactions.
-     * <p>
-     * The menu presents options for viewing all transactions, filtering by deposits
-     * or payments, generating specific reports, or returning to the home menu. The method
-     * continues to display the menu until the user chooses to return home.
-     * </p>
-     *
-     * @param scanner     a {@link Scanner} instance for reading user input
-     * @param transactions an {@link ArrayList} containing the transactions to be displayed
-     */
-    public static void displayLedgerMenu(Scanner scanner, ArrayList<Transaction> transactions) {
-        while (true) {
-            System.out.println("\nLedger Menu");
-            System.out.println("Choose an option:");
-            System.out.println("\tA) All");
-            System.out.println("\tD) Deposits");
-            System.out.println("\tP) Payments");
-            System.out.println("\tR) Reports");
-            System.out.println("\tH) Home");
-
-            String input = scanner.nextLine().trim();
-
-            switch (input.toUpperCase()) {
-                case "A" -> {
-                    displayLedger(transactions);
-                    scanner.nextLine();
-                }
-                case "D" -> {
-                    filterTransactionsByType(true, transactions);
-                    scanner.nextLine();
-                }
-                case "P" -> {
-                    filterTransactionsByType(false, transactions);
-                    scanner.nextLine();
-                }
-                case "R" -> displayReportsMenu(scanner,transactions);
-                case "H" -> {
-                    return;
-                }
-                default -> System.out.println("\nInvalid option");
-            }
-        }
-    }
-
-    /**
      * Displays the reports menu and handles user interaction for generating various reports
      * based on user input.
      * <p>
@@ -145,5 +100,50 @@ public class MenuManager {
         minAmount = getValidatedAmount(scanner,true);
 
         filterTransactionsByCustom(startDate,endDate,description,vendor,minAmount,maxAmount,transactions);
+    }
+
+    /**
+     * Displays the ledger menu and handles user interaction for viewing transactions.
+     * <p>
+     * The menu presents options for viewing all transactions, filtering by deposits
+     * or payments, generating specific reports, or returning to the home menu. The method
+     * continues to display the menu until the user chooses to return home.
+     * </p>
+     *
+     * @param scanner     a {@link Scanner} instance for reading user input
+     * @param transactions an {@link ArrayList} containing the transactions to be displayed
+     */
+    public static void displayLedgerMenu(Scanner scanner, ArrayList<Transaction> transactions) {
+        while (true) {
+            System.out.println("\nLedger Menu");
+            System.out.println("Choose an option:");
+            System.out.println("\tA) All");
+            System.out.println("\tD) Deposits");
+            System.out.println("\tP) Payments");
+            System.out.println("\tR) Reports");
+            System.out.println("\tH) Home");
+
+            String input = scanner.nextLine().trim();
+
+            switch (input.toUpperCase()) {
+                case "A" -> {
+                    displayLedger(transactions);
+                    scanner.nextLine();
+                }
+                case "D" -> {
+                    filterTransactionsByType(true, transactions);
+                    scanner.nextLine();
+                }
+                case "P" -> {
+                    filterTransactionsByType(false, transactions);
+                    scanner.nextLine();
+                }
+                case "R" -> displayReportsMenu(scanner,transactions);
+                case "H" -> {
+                    return;
+                }
+                default -> System.out.println("\nInvalid option");
+            }
+        }
     }
 }

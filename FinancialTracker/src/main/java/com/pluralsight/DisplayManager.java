@@ -68,11 +68,6 @@ public class DisplayManager {
                 color, amountColor, validateAndTruncate(t.amount()));
     }
 
-    private static String validateAndTruncate(Double input){
-        String value = String.format("%.2f",input);
-        return validateAndTruncate(value,AMOUNT_WIDTH);
-    }
-
     /**
      * Validates and truncates a given input string to ensure it fits within a specified width.
      * <p>
@@ -95,6 +90,11 @@ public class DisplayManager {
         }
 
         return output;
+    }
+
+    private static String validateAndTruncate(Double input){
+        String value = String.format("%.2f",input);
+        return validateAndTruncate(value,AMOUNT_WIDTH);
     }
 
     /**
@@ -129,21 +129,6 @@ public class DisplayManager {
     }
 
     /**
-     * Displays the full ledger of transactions in a formatted table.
-     * <p>
-     * The method calls {@link #formattedTable(ArrayList)} to generate a string representation
-     * of the transactions and prints it to the console. This provides a clear view of all
-     * transactions in the ledger.
-     * </p>
-     *
-     * @param transactions an {@link ArrayList} of {@link Transaction} objects to be displayed
-     */
-    public static void displayLedger(ArrayList<Transaction> transactions) {
-        System.out.println(TABLE_TITLE+"FULL LEDGER TABLE");
-        System.out.println(formattedTable(transactions));
-    }
-
-    /**
      * Returns a string representing the filtered array as a fully formatted table, ready to display.
      * <p>
      * The method applies the provided {@link Predicate} to the list of transactions,
@@ -162,6 +147,21 @@ public class DisplayManager {
 
         System.out.println(filteredTransactions.isEmpty() ? "\nNo Results Found Matching Criteria.\nPress Enter To Continue"
                 : tableTitle+"\n"+formattedTable(new ArrayList<>(filteredTransactions)));
+    }
+
+    /**
+     * Displays the full ledger of transactions in a formatted table.
+     * <p>
+     * The method calls {@link #formattedTable(ArrayList)} to generate a string representation
+     * of the transactions and prints it to the console. This provides a clear view of all
+     * transactions in the ledger.
+     * </p>
+     *
+     * @param transactions an {@link ArrayList} of {@link Transaction} objects to be displayed
+     */
+    public static void displayLedger(ArrayList<Transaction> transactions) {
+        System.out.println(TABLE_TITLE+"FULL LEDGER TABLE");
+        System.out.println(formattedTable(transactions));
     }
 
     /**

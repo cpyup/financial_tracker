@@ -13,44 +13,6 @@ public class TransactionManager {
     private static final String CSV_DELIMITER = "\\|";
 
     /**
-     * Loads transactions from a specified CSV file and adds them to the provided list.
-     * <p>
-     * The method reads each line of the file, splits the line into values using the
-     * specified CSV delimiter, and parses each valid line into a {@link Transaction}
-     * object using the {@link #parseTransaction(String[])} method. Only lines with
-     * exactly five values are processed.
-     * </p>
-     * <p>
-     * After loading, the order of the transactions is reversed so that the newest entries
-     * appear at the top of the list.
-     * </p>
-     * <p>
-     * If the specified file does not exist, an error message is printed and a new file
-     * is created.
-     * </p>
-     *
-     * @param fileName the name of the file from which to load transactions
-     * @param transactions the list to which loaded transactions will be added
-     */
-    public static void loadTransactionsFromFile(String fileName, ArrayList<Transaction> transactions) {
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] values = line.split(CSV_DELIMITER);
-                if (values.length == 5) {
-                    transactions.add(parseTransaction(values));
-                }
-            }
-            // Reverse load order so the newest entries are displayed at the top
-            Collections.reverse(transactions);
-
-        } catch (IOException e) {
-            System.out.println("File Doesn't Exist, Creating...");
-            createNewFile(fileName);
-        }
-    }
-
-    /**
      * Parses an array of string values into a {@link Transaction} object.
      * <p>
      * The input array must contain the following elements in the specified order:
@@ -110,6 +72,67 @@ public class TransactionManager {
     }
 
     /**
+     * Writes a {@link Transaction} object to a specified file.
+     * <p>
+     * The transaction is appended to the file in text format as defined by the
+     * {@link Transaction#toString()} method. If the file does not exist, it will
+     * be created.
+     * </p>
+     * <p>
+     * If an error occurs during the writing process, an error message is printed
+     * to the console.
+     * </p>
+     *
+     * @param transactionToAdd the {@link Transaction} object to be written to the file
+     * @param targetFileName the name of the file where the transaction will be saved
+     */
+    private static void writeToFile(Transaction transactionToAdd, String targetFileName) {
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(targetFileName, true))){
+            bufferedWriter.write(transactionToAdd.toString());
+        } catch (Exception e) {
+            System.out.println("Error Writing To File " + targetFileName + " " + e);
+        }
+    }
+
+    /**
+     * Loads transactions from a specified CSV file and adds them to the provided list.
+     * <p>
+     * The method reads each line of the file, splits the line into values using the
+     * specified CSV delimiter, and parses each valid line into a {@link Transaction}
+     * object using the {@link #parseTransaction(String[])} method. Only lines with
+     * exactly five values are processed.
+     * </p>
+     * <p>
+     * After loading, the order of the transactions is reversed so that the newest entries
+     * appear at the top of the list.
+     * </p>
+     * <p>
+     * If the specified file does not exist, an error message is printed and a new file
+     * is created.
+     * </p>
+     *
+     * @param fileName the name of the file from which to load transactions
+     * @param transactions the list to which loaded transactions will be added
+     */
+    public static void loadTransactionsFromFile(String fileName, ArrayList<Transaction> transactions) {
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(CSV_DELIMITER);
+                if (values.length == 5) {
+                    transactions.add(parseTransaction(values));
+                }
+            }
+            // Reverse load order so the newest entries are displayed at the top
+            Collections.reverse(transactions);
+
+        } catch (IOException e) {
+            System.out.println("File Doesn't Exist, Creating...");
+            createNewFile(fileName);
+        }
+    }
+
+    /**
      * Adds a new transaction to the current array based on user input and initiates writing it to file.
      * <p>
      * The method prompts the user for the transaction details, including date, time,
@@ -159,28 +182,5 @@ public class TransactionManager {
 
         // Add the transaction to transactions.csv
         writeToFile(newTransaction,targetFileName);
-    }
-
-    /**
-     * Writes a {@link Transaction} object to a specified file.
-     * <p>
-     * The transaction is appended to the file in text format as defined by the
-     * {@link Transaction#toString()} method. If the file does not exist, it will
-     * be created.
-     * </p>
-     * <p>
-     * If an error occurs during the writing process, an error message is printed
-     * to the console.
-     * </p>
-     *
-     * @param transactionToAdd the {@link Transaction} object to be written to the file
-     * @param targetFileName the name of the file where the transaction will be saved
-     */
-    private static void writeToFile(Transaction transactionToAdd, String targetFileName) {
-        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(targetFileName, true))){
-            bufferedWriter.write(transactionToAdd.toString());
-        } catch (Exception e) {
-            System.out.println("Error Writing To File " + targetFileName + " " + e);
-        }
     }
 }
