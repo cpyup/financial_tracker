@@ -77,16 +77,22 @@ Follow these steps to get your application running within IntelliJ IDEA:
 
 ## Display Examples
 
+### Full Ledger:
 ![Full ledger display](https://github.com/cpyup/financial_tracker/blob/main/screenshots/full_ledger_display.png?raw=true)
 
+### Deposits/Payments Only:
 ![Deposits and payments](https://github.com/cpyup/financial_tracker/blob/main/screenshots/deposits_and_payments.png?raw=true)
 
+### Month-Date/Previous Month:
 ![Month to date and previous month](https://github.com/cpyup/financial_tracker/blob/main/screenshots/month_to_date_and_previous.png?raw=true)
 
+### Previous Year/Vendor Searching:
 ![Previous year and vendor search](https://github.com/cpyup/financial_tracker/blob/main/screenshots/previous_year_and_vendor_search.png?raw=true)
 
+### Custom Filters Searching:
 ![Custom search filters](https://github.com/cpyup/financial_tracker/blob/main/screenshots/custom_search.png?raw=true)
 
+### Input Error Handling Example:
 ![Example input errors](https://github.com/cpyup/financial_tracker/blob/main/screenshots/error_examples.png?raw=true)
 
 ## Project Highlights
@@ -123,7 +129,11 @@ private static void displayFilteredTransactions(Predicate<Transaction> filter,Ar
 - Dynamic row counts, allowing future parameters if need be
 - Better implementation of headers/footers, namely, improving length assignments (remove magic numbers in strings) and removing manual alignment spacing in header text
 
-> Outside of that, there is still a lot of redundancy remaining between methods. Error handling needs to be massively extended, with more specific error messages added. Classes are still poorly encapsulated, likely need to be majorly refactored in a more sensible manner. Additionally, multiple desired features were never implemented:
+### General Improvements
+
+> There is still a lot of redundancy remaining between methods. Error handling needs to be massively extended, with more specific error messages added. Classes are still poorly encapsulated, likely need to be majorly refactored in a more sensible manner.
+
+### Future Features
 
 - Accessibility settings to disable green/red text (can be difficult for some to read)
 - Additional settings related to table format/display
