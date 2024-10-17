@@ -23,13 +23,21 @@ public class InputValidator {
      * @throws NullPointerException if dateString is null
      * @throws NumberFormatException if the date string cannot be parsed into integers
      */
-    private static boolean isValidDate(String dateString) {
-        try {
-            String[] parts = dateString.split("-");
-            if (parts.length != 3) {
-                return false; // Invalid format
-            }
+    private static boolean isValidDateFormat(String dateString) {
+        // Check if the date is in the format yyyy-MM-dd
+        String regex = "\\d{4}-\\d{2}-\\d{2}"; // Matches the pattern yyyy-MM-dd
+        return dateString.matches(regex);
+    }
 
+    private static boolean isValidDate(String dateString) {
+        // Check format first (yyyy-MM-dd)
+        String[] parts = dateString.split("-");
+        if (parts.length != 3) {
+            return false; // Invalid format
+        }
+
+        // Check if parts are numbers
+        try {
             int year = Integer.parseInt(parts[0]);
             int month = Integer.parseInt(parts[1]);
             int day = Integer.parseInt(parts[2]);
@@ -39,19 +47,15 @@ public class InputValidator {
                 return false;
             }
 
+            // Validate day based on month
             int[] daysInMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-
-            // Check for leap year
             if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {
-                daysInMonth[1] = 29; // February has 29 days in a leap year
+                daysInMonth[1] = 29; // Leap year
             }
 
-            // Validate day
             return day > 0 && day <= daysInMonth[month - 1];
         } catch (NumberFormatException e) {
-            return false; // Return false if parsing fails
-        } catch (Exception e) {
-            return false; // Handle any other unexpected exceptions
+            return false; // Invalid number format
         }
     }
 
@@ -74,23 +78,27 @@ public class InputValidator {
             System.out.print("Enter transaction date (yyyy-MM-dd): ");
             String dateInput = scanner.nextLine().trim();
 
-            if(isNullable && dateInput.isBlank())return null;
-
-            try{
-                if(isValidDate(dateInput)){
-                    try {
-                        date = LocalDate.parse(dateInput, DATE_FORMATTER);
-                        break;
-                    } catch (RuntimeException e) {
-                        System.out.println("Invalid date format. Please use yyyy-MM-dd.");
-                    }
-                }
-                throw new RuntimeException();
-            }catch(Exception e){
-                System.out.println("Date does not exist. Please enter a valid date.");
+            if (isNullable && dateInput.isBlank()) {
+                return null;
             }
 
+            try {
+                // First check for valid format
+                if (!isValidDateFormat(dateInput)) {
+                    System.out.println("Invalid date format. Please use yyyy-MM-dd.");
+                    continue;
+                }
 
+                // Attempt to parse the date now
+                if(isValidDate(dateInput)){
+                    date = LocalDate.parse(dateInput, DATE_FORMATTER);
+                    break; // Exit loop on successful parsing
+                }else{
+                    throw new Exception();
+                }
+            } catch (Exception e) {
+                System.out.println("Date does not exist. Please enter a valid date.");
+            }
         }
         return date;
     }
@@ -161,10 +169,10 @@ public class InputValidator {
                 if (amount > 0 || isNullable) {
                     break;
                 } else {
-                    System.out.print("Amount must be a positive number. Please enter again: ");
+                    throw new NumberFormatException();
                 }
             } catch (NumberFormatException e) {
-                System.out.print("Invalid amount. Please enter a valid positive number: ");
+                System.out.print("Invalid amount.Please enter a valid positive number.\n");
             }
         }
         return amount;
