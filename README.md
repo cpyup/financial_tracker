@@ -81,6 +81,8 @@ Follow these steps to get your application running within IntelliJ IDEA:
 
 ![Custom search filters](https://github.com/cpyup/financial_tracker/blob/main/screenshots/custom_search.png?raw=true)
 
+![Example input errors](https://github.com/cpyup/financial_tracker/blob/main/screenshots/error_examples.png?raw=true)
+
 ## Project Highlights
 
 [TODO]

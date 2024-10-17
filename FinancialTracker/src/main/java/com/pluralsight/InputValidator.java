@@ -24,19 +24,16 @@ public class InputValidator {
      * @throws NumberFormatException if the date string cannot be parsed into integers
      */
     private static boolean isValidDateFormat(String dateString) {
-        // Check if the date is in the format yyyy-MM-dd
         String regex = "\\d{4}-\\d{2}-\\d{2}"; // Matches the pattern yyyy-MM-dd
         return dateString.matches(regex);
     }
 
     private static boolean isValidDate(String dateString) {
-        // Check format first (yyyy-MM-dd)
         String[] parts = dateString.split("-");
         if (parts.length != 3) {
             return false; // Invalid format
         }
 
-        // Check if parts are numbers
         try {
             int year = Integer.parseInt(parts[0]);
             int month = Integer.parseInt(parts[1]);
@@ -55,7 +52,7 @@ public class InputValidator {
 
             return day > 0 && day <= daysInMonth[month - 1];
         } catch (NumberFormatException e) {
-            return false; // Invalid number format
+            return false;
         }
     }
 
@@ -83,13 +80,11 @@ public class InputValidator {
             }
 
             try {
-                // First check for valid format
                 if (!isValidDateFormat(dateInput)) {
                     System.out.println("Invalid date format. Please use yyyy-MM-dd.");
                     continue;
                 }
 
-                // Attempt to parse the date now
                 if(isValidDate(dateInput)){
                     date = LocalDate.parse(dateInput, DATE_FORMATTER);
                     break; // Exit loop on successful parsing
