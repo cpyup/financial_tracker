@@ -1,13 +1,94 @@
 package com.pluralsight;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import static com.pluralsight.DisplayManager.*;
+import static com.pluralsight.TableManager.*;
 import static com.pluralsight.InputValidator.*;
 
 public class MenuManager {
+
+    /**
+     * Displays the ledger menu and handles user interaction for viewing transactions.
+     * <p>
+     * The menu presents options for viewing all transactions, filtering by deposits
+     * or payments, generating specific reports, or returning to the home menu. The method
+     * continues to display the menu until the user chooses to return home.
+     * </p>
+     *
+     * @param scanner     a {@link Scanner} instance for reading user input
+     * @param transactions an {@link ArrayList} containing the transactions to be displayed
+     */
+    public static void displayLedgerMenu(Scanner scanner, ArrayList<Transaction> transactions) {
+        while (true) {
+            System.out.println("\nLedger Menu");
+            System.out.println("Choose an option:");
+            System.out.println("\tA) All");
+            System.out.println("\tD) Deposits");
+            System.out.println("\tP) Payments");
+            System.out.println("\tR) Reports");
+            System.out.println("\tH) Home");
+
+            String input = scanner.nextLine().trim();
+
+            switch (input.toUpperCase()) {
+                case "A" -> {
+                    displayFullLedger(transactions);
+                    scanner.nextLine();
+                }
+                case "D" -> {
+                    filterTransactionsByType(true, transactions);
+                    scanner.nextLine();
+                }
+                case "P" -> {
+                    filterTransactionsByType(false, transactions);
+                    scanner.nextLine();
+                }
+                case "R" -> displayReportsMenu(scanner,transactions);
+                case "H" -> {
+                    return;
+                }
+                default -> System.out.println("\nInvalid option");
+            }
+        }
+    }
+
+    public static void displayTransactionAddMenu(Scanner scanner, boolean isPayment, ArrayList<Transaction> transactions, String targetFileName){
+        String verbiage = (isPayment) ? "Payment" : "Deposit";
+        System.out.println("\n"+verbiage+" Adding Menu\nType 'Exit' To Return Home\n");
+        // Get validated date and time inputs
+        LocalDate date = getValidatedDate(scanner);
+        if(date == null)return;
+        LocalTime time = getValidatedTime(scanner);
+        if(time == null)return;
+
+        // Prompt for the description and vendor
+        System.out.print("Enter transaction description: ");
+        String description = scanner.nextLine().trim();
+        System.out.print("Enter vendor: ");
+        String vendor = scanner.nextLine().trim();
+
+        // Get validated amount input
+        Double amount = getValidatedAmount(scanner);
+
+        // Adjust the amount based on the transaction type
+        if (isPayment) {
+            amount = -amount;
+        }
+
+        Transaction newTransaction = new Transaction(date, time, description, vendor, amount);
+        TransactionManager.addNewTransaction(newTransaction,transactions,targetFileName);
+    }
+
+    public static void displayMainMenu(){
+        System.out.println("\nMain Menu\nChoose an option:");
+        System.out.println("\tD) Add Deposit");
+        System.out.println("\tP) Make Payment (Debit)");
+        System.out.println("\tL) Ledger");
+        System.out.println("\tX) Exit");
+    }
 
     /**
      * Displays the reports menu and handles user interaction for generating various reports
@@ -100,50 +181,5 @@ public class MenuManager {
         minAmount = getValidatedAmount(scanner,true);
 
         filterTransactionsByCustom(startDate,endDate,description,vendor,minAmount,maxAmount,transactions);
-    }
-
-    /**
-     * Displays the ledger menu and handles user interaction for viewing transactions.
-     * <p>
-     * The menu presents options for viewing all transactions, filtering by deposits
-     * or payments, generating specific reports, or returning to the home menu. The method
-     * continues to display the menu until the user chooses to return home.
-     * </p>
-     *
-     * @param scanner     a {@link Scanner} instance for reading user input
-     * @param transactions an {@link ArrayList} containing the transactions to be displayed
-     */
-    public static void displayLedgerMenu(Scanner scanner, ArrayList<Transaction> transactions) {
-        while (true) {
-            System.out.println("\nLedger Menu");
-            System.out.println("Choose an option:");
-            System.out.println("\tA) All");
-            System.out.println("\tD) Deposits");
-            System.out.println("\tP) Payments");
-            System.out.println("\tR) Reports");
-            System.out.println("\tH) Home");
-
-            String input = scanner.nextLine().trim();
-
-            switch (input.toUpperCase()) {
-                case "A" -> {
-                    displayLedger(transactions);
-                    scanner.nextLine();
-                }
-                case "D" -> {
-                    filterTransactionsByType(true, transactions);
-                    scanner.nextLine();
-                }
-                case "P" -> {
-                    filterTransactionsByType(false, transactions);
-                    scanner.nextLine();
-                }
-                case "R" -> displayReportsMenu(scanner,transactions);
-                case "H" -> {
-                    return;
-                }
-                default -> System.out.println("\nInvalid option");
-            }
-        }
     }
 }

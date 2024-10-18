@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 
 import static com.pluralsight.InputValidator.*;
 
-public class DisplayManager {
+public class TableManager {
     private static final int DATE_WIDTH = 10;
     private static final int TIME_WIDTH = 9;
     private static final int DESCRIPTION_WIDTH = 40;
@@ -27,141 +27,18 @@ public class DisplayManager {
     private static final String TRUNCATION_STRING = "...";
 
     /**
-     * Creates a formatted header string for displaying transaction data.
-     * <p>
-     * The header includes column titles for date, time, description, vendor, and amount.
-     * The string is formatted to ensure proper alignment based on predefined column widths.
-     * Preset border string added to front and back of string, for table border padding.
-     * </p>
-     *
-     * @return a formatted header string ready for display
-     */
-    private static String createHeader() {
-        return String.format(BORDER_STRING + HEADER_COLOR+" %-" + DATE_WIDTH + "s  %-" + TIME_WIDTH + "s  %-"
-                        + DESCRIPTION_WIDTH + "s  %-" + VENDOR_WIDTH + "s  %" + AMOUNT_WIDTH + "s    " + BORDER_STRING + "%n",
-                "   Date", "   Time", "               Description", "                  Vendor", "Amount");  // Padding to align header text with center of columns
-    }
-
-    /**
-     * Formats a {@link Transaction} object into a styled string for displaying as a table.
-     * <p>
-     * The method applies alternating row colors for visual distinction and changes the color
-     * of the amount based on whether it is positive or negative. It formats the transaction's
-     * date, time, description, vendor, and amount according to predefined widths for proper alignment.
-     * </p>
-     *
-     * @param t           the {@link Transaction} object to be formatted
-     * @param isEvenRow   a boolean indicating whether the transaction is in an even row
-     * @return a single formatted table entry string representing the transaction, ready for display
-     */
-    private static String formatTransaction(Transaction t, boolean isEvenRow) {
-        String color = isEvenRow ? TABLE_COLOR_0 : TABLE_COLOR_1;
-        String amountColor = (t.amount() < 0) ? NEGATIVE_COLOR : POSITIVE_COLOR;
-
-        return String.format("%s %-" + DATE_WIDTH + "s %s%s %-" + TIME_WIDTH
-                        + "s%s%s %-" + DESCRIPTION_WIDTH + "s %s%s %-" + VENDOR_WIDTH
-                        + "s %s%s %s%" + AMOUNT_WIDTH + "s " + BORDER_STRING + "%n",
-                color, t.date().format(DATE_FORMATTER), COLUMN_SEPARATOR,
-                color, t.time().format(TIME_FORMATTER), COLUMN_SEPARATOR,
-                color, validateAndTruncate(t.description(),DESCRIPTION_WIDTH), COLUMN_SEPARATOR,
-                color, validateAndTruncate(t.vendor(),VENDOR_WIDTH), COLUMN_SEPARATOR,
-                color, amountColor, validateAndTruncate(t.amount()));
-    }
-
-    /**
-     * Validates and truncates a given input string to ensure it fits within a specified width.
-     * <p>
-     * If the input string exceeds the defined {@code DESCRIPTION_WIDTH}, it is truncated and
-     * appended with an ellipsis ("...") to indicate that it has been shortened. If the input is
-     * within the acceptable length, it is returned unchanged.
-     * </p>
-     *
-     * @param input the string to be validated and potentially truncated
-     * @return a string that fits within the {@code DESCRIPTION_WIDTH}, with an ellipsis appended if truncated
-     */
-    private static String validateAndTruncate(String input, int targetSize){
-        String output;
-
-        if(input.length() > targetSize){
-            output = input.substring(0,targetSize - TRUNCATION_STRING.length());
-            output += TRUNCATION_STRING;
-        }else{
-            output = input;
-        }
-
-        return output;
-    }
-
-    private static String validateAndTruncate(Double input){
-        String value = String.format("%.2f",input);
-        return validateAndTruncate(value,AMOUNT_WIDTH);
-    }
-
-    /**
-     * Generates a formatted string representation of a table displaying a list of transactions.
-     * <p>
-     * If the provided list of transactions is empty, a message indicating that no data is found
-     * is returned. Otherwise, the method constructs the table as a string by appending a header and formatting
-     * each transaction, adding borders and spacing for visual clarity.
-     * </p>
-     *
-     * @param targetInventory an {@link ArrayList} of {@link Transaction} objects to be displayed
-     * @return a formatted string representing the transaction array as a table, or a message if no data is found
-     */
-    private static String formattedTable(ArrayList<Transaction> targetInventory) {
-        if (targetInventory.isEmpty()) return "No transaction data found in file";
-
-        StringBuilder output = new StringBuilder();
-        output.append(createHeader());
-
-        for (int i = 0; i < targetInventory.size(); i++) {
-            Transaction t = targetInventory.get(i);
-            output.append(BORDER_STRING);
-            output.append(formatTransaction(t, i % 2 == 0));
-        }
-
-        // Construct the footer from the total row size
-        int footerSize = DATE_WIDTH + TIME_WIDTH + DESCRIPTION_WIDTH + VENDOR_WIDTH + AMOUNT_WIDTH + SPACING_OFFSET;
-        output.append(BORDER_STRING).append(HEADER_COLOR).append(" ".repeat(footerSize)).append(RESET_COLOR).append(BORDER_STRING);
-        output.append("\nPress Enter To Continue");
-
-        return output.toString();
-    }
-
-    /**
-     * Returns a string representing the filtered array as a fully formatted table, ready to display.
-     * <p>
-     * The method applies the provided {@link Predicate} to the list of transactions,
-     * filtering out those that do not match. It then sends the filtered results to
-     * {@link #formattedTable(ArrayList)} for displaying. If no transactions match the criteria, a message indicating this
-     * is displayed.
-     * </p>
-     *
-     * @param filter a {@link Predicate} used to filter the transactions
-     * @param transactions an {@link ArrayList} of {@link Transaction} objects to be filtered and displayed
-     */
-    private static void displayFilteredTransactions(Predicate<Transaction> filter,ArrayList<Transaction> transactions,String tableTitle) {
-        List<Transaction> filteredTransactions = transactions.stream()  // Checking for entries matching indicated filters
-                .filter(filter)
-                .toList();
-
-        System.out.println(filteredTransactions.isEmpty() ? "\nNo Results Found Matching Criteria.\nPress Enter To Continue"
-                : tableTitle+"\n"+formattedTable(new ArrayList<>(filteredTransactions)));
-    }
-
-    /**
      * Displays the full ledger of transactions in a formatted table.
      * <p>
-     * The method calls {@link #formattedTable(ArrayList)} to generate a string representation
+     * The method calls {@link #formattedTableDisplay(ArrayList)} to generate a string representation
      * of the transactions and prints it to the console. This provides a clear view of all
      * transactions in the ledger.
      * </p>
      *
      * @param transactions an {@link ArrayList} of {@link Transaction} objects to be displayed
      */
-    public static void displayLedger(ArrayList<Transaction> transactions) {
+    public static void displayFullLedger(ArrayList<Transaction> transactions) {
         System.out.println(TABLE_TITLE+"FULL LEDGER TABLE");
-        System.out.println(formattedTable(transactions));
+        System.out.println(formattedTableDisplay(transactions));
     }
 
     /**
@@ -263,5 +140,128 @@ public class DisplayManager {
             // Combine all conditions
             return dateMatches && descriptionMatches && vendorMatches && amountMatches;
         }, transactions,tableTitle);
+    }
+
+    /**
+     * Creates a formatted header string for displaying transaction data.
+     * <p>
+     * The header includes column titles for date, time, description, vendor, and amount.
+     * The string is formatted to ensure proper alignment based on predefined column widths.
+     * Preset border string added to front and back of string, for table border padding.
+     * </p>
+     *
+     * @return a formatted header string ready for display
+     */
+    private static String createTableHeader() {
+        return String.format(BORDER_STRING + HEADER_COLOR+" %-" + DATE_WIDTH + "s  %-" + TIME_WIDTH + "s  %-"
+                        + DESCRIPTION_WIDTH + "s  %-" + VENDOR_WIDTH + "s  %" + AMOUNT_WIDTH + "s    " + BORDER_STRING + "%n",
+                "   Date", "   Time", "               Description", "                  Vendor", "Amount");  // Padding to align header text with center of columns
+    }
+
+    /**
+     * Formats a {@link Transaction} object into a styled string for displaying as a table.
+     * <p>
+     * The method applies alternating row colors for visual distinction and changes the color
+     * of the amount based on whether it is positive or negative. It formats the transaction's
+     * date, time, description, vendor, and amount according to predefined widths for proper alignment.
+     * </p>
+     *
+     * @param t           the {@link Transaction} object to be formatted
+     * @param isEvenRow   a boolean indicating whether the transaction is in an even row
+     * @return a single formatted table entry string representing the transaction, ready for display
+     */
+    private static String formatTableEntry(Transaction t, boolean isEvenRow) {
+        String color = isEvenRow ? TABLE_COLOR_0 : TABLE_COLOR_1;
+        String amountColor = (t.amount() < 0) ? NEGATIVE_COLOR : POSITIVE_COLOR;
+
+        return String.format("%s %-" + DATE_WIDTH + "s %s%s %-" + TIME_WIDTH
+                        + "s%s%s %-" + DESCRIPTION_WIDTH + "s %s%s %-" + VENDOR_WIDTH
+                        + "s %s%s %s%" + AMOUNT_WIDTH + "s " + BORDER_STRING + "%n",
+                color, t.date().format(DATE_FORMATTER), COLUMN_SEPARATOR,
+                color, t.time().format(TIME_FORMATTER), COLUMN_SEPARATOR,
+                color, validateAndTruncate(t.description(),DESCRIPTION_WIDTH), COLUMN_SEPARATOR,
+                color, validateAndTruncate(t.vendor(),VENDOR_WIDTH), COLUMN_SEPARATOR,
+                color, amountColor, validateAndTruncate(t.amount()));
+    }
+
+    /**
+     * Validates and truncates a given input string to ensure it fits within a specified width.
+     * <p>
+     * If the input string exceeds the defined {@code DESCRIPTION_WIDTH}, it is truncated and
+     * appended with an ellipsis ("...") to indicate that it has been shortened. If the input is
+     * within the acceptable length, it is returned unchanged.
+     * </p>
+     *
+     * @param input the string to be validated and potentially truncated
+     * @return a string that fits within the {@code DESCRIPTION_WIDTH}, with an ellipsis appended if truncated
+     */
+    private static String validateAndTruncate(String input, int targetSize){
+        String output;
+
+        if(input.length() > targetSize){
+            output = input.substring(0,targetSize - TRUNCATION_STRING.length());
+            output += TRUNCATION_STRING;
+        }else{
+            output = input;
+        }
+
+        return output;
+    }
+
+    private static String validateAndTruncate(Double input){
+        String value = String.format("%.2f",input);
+        return validateAndTruncate(value,AMOUNT_WIDTH);
+    }
+
+    /**
+     * Generates a formatted string representation of a table displaying a list of transactions.
+     * <p>
+     * If the provided list of transactions is empty, a message indicating that no data is found
+     * is returned. Otherwise, the method constructs the table as a string by appending a header and formatting
+     * each transaction, adding borders and spacing for visual clarity.
+     * </p>
+     *
+     * @param targetInventory an {@link ArrayList} of {@link Transaction} objects to be displayed
+     * @return a formatted string representing the transaction array as a table, or a message if no data is found
+     */
+    private static String formattedTableDisplay(ArrayList<Transaction> targetInventory) {
+        if (targetInventory.isEmpty()) return "No transaction data found in file";
+
+        StringBuilder output = new StringBuilder();
+        output.append(createTableHeader());
+
+        for (int i = 0; i < targetInventory.size(); i++) {
+            Transaction t = targetInventory.get(i);
+            output.append(BORDER_STRING);
+            output.append(formatTableEntry(t, i % 2 == 0));
+        }
+
+        // Construct the footer from the total row size
+        int footerSize = DATE_WIDTH + TIME_WIDTH + DESCRIPTION_WIDTH + VENDOR_WIDTH + AMOUNT_WIDTH + SPACING_OFFSET;
+        output.append(BORDER_STRING).append(HEADER_COLOR).append(" ".repeat(footerSize)).append(RESET_COLOR).append(BORDER_STRING);
+        output.append("\nPress Enter To Continue");
+
+        return output.toString();
+    }
+
+    /**
+     * Returns a string representing the filtered array as a fully formatted table, ready to display.
+     * <p>
+     * The method applies the provided {@link Predicate} to the list of transactions,
+     * filtering out those that do not match. It then sends the filtered results to
+     * {@link #formattedTableDisplay(ArrayList)} for displaying. If no transactions match the criteria, a message indicating this
+     * is displayed.
+     * </p>
+     *
+     * @param filter a {@link Predicate} used to filter the transactions
+     * @param transactions an {@link ArrayList} of {@link Transaction} objects to be filtered and displayed
+     */
+    private static void displayFilteredTransactions(Predicate<Transaction> filter,ArrayList<Transaction> transactions,String tableTitle) {
+        List<Transaction> filteredTransactions = transactions.stream()  // Checking for entries matching indicated filters
+                .filter(filter)
+                .toList();
+
+        System.out.println(filteredTransactions.isEmpty() ? "\nNo Results Found Matching Criteria.\nPress Enter To Continue"
+                : tableTitle+"\n"+ formattedTableDisplay(new ArrayList<>(filteredTransactions)));
     }
 }

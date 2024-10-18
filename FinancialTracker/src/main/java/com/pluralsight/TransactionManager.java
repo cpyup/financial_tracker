@@ -5,94 +5,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Scanner;
-
-import static com.pluralsight.InputValidator.*;
 
 public class TransactionManager {
     private static final String CSV_DELIMITER = "\\|";
-
-    /**
-     * Parses an array of string values into a {@link Transaction} object.
-     * <p>
-     * The input array must contain the following elements in the specified order:
-     * <ul>
-     *     <li>0: Date in the format recognized by {@link LocalDate}</li>
-     *     <li>1: Time in the format recognized by {@link LocalTime}</li>
-     *     <li>2: Description of the transaction</li>
-     *     <li>3: Vendor associated with the transaction</li>
-     *     <li>4: Amount as a string that can be parsed into a double</li>
-     * </ul>
-     * </p>
-     * <p>
-     * The method trims whitespace from each input value and parses the date,
-     * time, and amount accordingly.
-     * </p>
-     *
-     * @param values an array of string values representing the transaction details
-     * @return a {@link Transaction} object populated with the parsed values
-     */
-    private static Transaction parseTransaction(String[] values){
-        LocalDate date = LocalDate.parse(values[0].trim());
-        LocalTime time = LocalTime.parse(values[1].trim());
-        String description = values[2].trim();
-        String vendor = values[3].trim();
-        double amount = Double.parseDouble(values[4].trim());
-        return new Transaction(date,time,description,vendor,amount);
-    }
-
-    /**
-     * Creates a new file with the specified name.
-     * <p>
-     * If the file does not already exist, it will be created, and a message will
-     * be printed indicating success. If the file already exists, a message will
-     * be printed indicating that the file already exists.
-     * </p>
-     * <p>
-     * In case of an I/O error during the file creation process, an exception
-     * will be caught and a runtime exception will be thrown with the original
-     * exception as the cause.
-     * </p>
-     *
-     * @param fileName the name of the file to be created
-     * @throws RuntimeException if an I/O error occurs during file creation
-     */
-    private static void createNewFile(String fileName){
-        try {
-            File newFile = new File(fileName);
-            if (newFile.createNewFile()) {
-                System.out.println("File '" + fileName + "' Successfully Created");
-            } else {
-                System.out.println("File '" + fileName + "' Already Exists");
-            }
-        } catch (IOException ex) {
-            System.out.println("Error Creating File " + fileName);
-            throw new RuntimeException(ex);
-        }
-    }
-
-    /**
-     * Writes a {@link Transaction} object to a specified file.
-     * <p>
-     * The transaction is appended to the file in text format as defined by the
-     * {@link Transaction#toString()} method. If the file does not exist, it will
-     * be created.
-     * </p>
-     * <p>
-     * If an error occurs during the writing process, an error message is printed
-     * to the console.
-     * </p>
-     *
-     * @param transactionToAdd the {@link Transaction} object to be written to the file
-     * @param targetFileName the name of the file where the transaction will be saved
-     */
-    private static void writeToFile(Transaction transactionToAdd, String targetFileName) {
-        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(targetFileName, true))){
-            bufferedWriter.write(transactionToAdd.toString());
-        } catch (Exception e) {
-            System.out.println("Error Writing To File " + targetFileName + " " + e);
-        }
-    }
 
     /**
      * Loads transactions from a specified CSV file and adds them to the provided list.
@@ -144,43 +59,94 @@ public class TransactionManager {
      * and is also written to the specified target file.
      * </p>
      *
-     * @param scanner a {@link Scanner} instance for reading user input
-     * @param isPayment a boolean indicating whether the transaction is a payment (true)
-     *                  or a deposit (false)
      * @param transactions an {@link ArrayList} to which the new transaction will be added
      * @param targetFileName the name of the file to which the transaction will be saved
      */
-    public static void addTransaction(Scanner scanner, boolean isPayment, ArrayList<Transaction> transactions, String targetFileName) {
-        String verbiage = (isPayment) ? "Payment" : "Deposit";
-        System.out.println("\n"+verbiage+" Adding Menu\nType 'Exit' To Return Home\n");
-        // Get validated date and time inputs
-        LocalDate date = getValidatedDate(scanner);
-        if(date == null)return;
-        LocalTime time = getValidatedTime(scanner);
-        if(time == null)return;
+    public static void addNewTransaction(Transaction t, ArrayList<Transaction> transactions, String targetFileName) {
+        // Add the new transaction to the array
+        transactions.add(0,t);
+        System.out.println(t.amount()>0 ? "Payment added successfully.\n" : "Deposit added successfully.\n");
 
-        // Prompt for the description and vendor
-        System.out.print("Enter transaction description: ");
-        String description = scanner.nextLine().trim();
-        System.out.print("Enter vendor: ");
-        String vendor = scanner.nextLine().trim();
+        // Add the transaction to data file
+        writeToFile(t,targetFileName);
+    }
 
-        // Get validated amount input
-        Double amount = getValidatedAmount(scanner);
+    /**
+     * Parses an array of string values into a {@link Transaction} object.
+     * <p>
+     * The input array must contain the following elements in the specified order:
+     * <ul>
+     *     <li>0: Date in the format recognized by {@link LocalDate}</li>
+     *     <li>1: Time in the format recognized by {@link LocalTime}</li>
+     *     <li>2: Description of the transaction</li>
+     *     <li>3: Vendor associated with the transaction</li>
+     *     <li>4: Amount as a string that can be parsed into a double</li>
+     * </ul>
+     * </p>
+     * <p>
+     * The method trims whitespace from each input value and parses the date,
+     * time, and amount accordingly.
+     * </p>
+     *
+     * @param values an array of string values representing the transaction details
+     * @return a {@link Transaction} object populated with the parsed values
+     */
+    private static Transaction parseTransaction(String[] values){
+        LocalDate date = LocalDate.parse(values[0].trim());
+        LocalTime time = LocalTime.parse(values[1].trim());
+        String description = values[2].trim();
+        String vendor = values[3].trim();
+        double amount = Double.parseDouble(values[4].trim());
+        return new Transaction(date,time,description,vendor,amount);
+    }
 
-        // Adjust the amount based on the transaction type
-        if (isPayment) {
-            amount = -amount;
+    /**
+     * Creates a new file with the specified name.
+     * <p>
+     * If the file does not already exist, it will be created, and a message will
+     * be printed indicating success. If the file already exists, a message will
+     * be printed indicating that the file already exists.
+     * </p>
+     * <p>
+     * In case of an I/O error during the file creation process, an exception
+     * will be caught and a runtime exception will be thrown with the original
+     * exception as the cause.
+     * </p>
+     *
+     * @param fileName the name of the file to be created
+     * @throws RuntimeException if an I/O error occurs during file creation
+     */
+    private static void createNewFile(String fileName){
+        try {
+            File newFile = new File(fileName);
+
+            System.out.println("File '" + fileName + "' " + ((newFile.createNewFile()) ?"Successfully Created":"Already Exists"));
+        } catch (IOException ex) {
+            System.out.println("Error Creating File " + fileName);
+            throw new RuntimeException(ex);
         }
+    }
 
-        // Create a new Transaction object with the validated inputs
-        Transaction newTransaction = new Transaction(date, time, description, vendor, amount);
-
-        // Add the new transaction to the transactions list
-        transactions.add(0,newTransaction);
-        System.out.println(isPayment ? "Payment added successfully.\n" : "Deposit added successfully.\n");
-
-        // Add the transaction to transactions.csv
-        writeToFile(newTransaction,targetFileName);
+    /**
+     * Writes a {@link Transaction} object to a specified file.
+     * <p>
+     * The transaction is appended to the file in text format as defined by the
+     * {@link Transaction#toString()} method. If the file does not exist, it will
+     * be created.
+     * </p>
+     * <p>
+     * If an error occurs during the writing process, an error message is printed
+     * to the console.
+     * </p>
+     *
+     * @param transactionToAdd the {@link Transaction} object to be written to the file
+     * @param targetFileName the name of the file where the transaction will be saved
+     */
+    private static void writeToFile(Transaction transactionToAdd, String targetFileName) {
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(targetFileName, true))){
+            bufferedWriter.write(transactionToAdd.toString());
+        } catch (Exception e) {
+            System.out.println("Error Writing To File " + targetFileName + " " + e);
+        }
     }
 }

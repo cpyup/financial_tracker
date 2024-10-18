@@ -12,70 +12,6 @@ public class InputValidator {
     public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern(TIME_FORMAT);
 
     /**
-     * Checks if the given date string is in the valid format of yyyy-MM-dd.
-     *
-     * <p>This method uses a regular expression to determine if the input string
-     * matches the expected date format. The format must consist of four digits
-     * for the year, followed by a hyphen, two digits for the month, another
-     * hyphen, and two digits for the day. For example, "2023-10-17" is a valid
-     * date format, while "10-17-2023" is not.</p>
-     *
-     * @param dateString the date string to be validated
-     * @return {@code true} if the date string is in the valid format;
-     *         {@code false} otherwise
-     */
-    private static boolean isValidDateFormat(String dateString) {
-        String regex = "\\d{4}-\\d{2}-\\d{2}";
-        return dateString.matches(regex);
-    }
-
-    /**
-     * Validates whether the given date string represents a valid date.
-     *
-     * <p>This method expects the date string to be in the format yyyy-MM-dd.
-     * It first splits the string into year, month, and day components. It checks
-     * that there are exactly three parts and that each part can be parsed as an
-     * integer. The method also validates the month (should be between 1 and 12)
-     * and the day, taking into account the varying number of days in each month,
-     * as well as leap years.</p>
-     *
-     * @param dateString the date string to be validated
-     * @return {@code true} if the date string represents a valid date;
-     *         {@code false} otherwise
-     */
-    private static boolean isValidDate(String dateString) {
-        String[] parts = dateString.split("-");
-        if (parts.length != 3) {
-            return false; // Invalid format
-        }
-
-        try {
-            int year = Integer.parseInt(parts[0]);
-            int month = Integer.parseInt(parts[1]);
-            int day = Integer.parseInt(parts[2]);
-
-            // Validate month
-            if (month < 1 || month > 12) {
-                return false;
-            }
-
-            // Validate day based on month
-            int[] daysInMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-            if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {
-                daysInMonth[1] = 29; // Leap year
-            }
-
-            return day > 0 && day <= daysInMonth[month - 1];
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
-    private static boolean isExitCommand(String input){
-        return input.equalsIgnoreCase("exit");
-    }
-
-    /**
      * Prompts the user to enter a validated date and returns it as a {@link LocalDate} object.
      * <p>
      * The method repeatedly asks for user input until a valid date in the format "yyyy-MM-dd"
@@ -209,5 +145,66 @@ public class InputValidator {
      */
     public static Double getValidatedAmount(Scanner scanner){
         return getValidatedAmount(scanner,false);
+    }
+
+    /**
+     * Checks if the given date string is in the valid format of yyyy-MM-dd.
+     *
+     * <p>This method uses a regular expression to determine if the input string
+     * matches the expected date format. The format must consist of four digits
+     * for the year, followed by a hyphen, two digits for the month, another
+     * hyphen, and two digits for the day. For example, "2023-10-17" is a valid
+     * date format, while "10-17-2023" is not.</p>
+     *
+     * @param dateString the date string to be validated
+     * @return {@code true} if the date string is in the valid format;
+     *         {@code false} otherwise
+     */
+    private static boolean isValidDateFormat(String dateString) {
+        String regex = "\\d{4}-\\d{2}-\\d{2}";
+        return dateString.matches(regex);
+    }
+
+    /**
+     * Validates whether the given date string represents a valid date.
+     *
+     * <p>This method expects the date string to be in the format yyyy-MM-dd.
+     * It first splits the string into year, month, and day components. It checks
+     * that there are exactly three parts and that each part can be parsed as an
+     * integer. The method also validates the month (should be between 1 and 12)
+     * and the day, taking into account the varying number of days in each month,
+     * as well as leap years.</p>
+     *
+     * @param dateString the date string to be validated
+     * @return {@code true} if the date string represents a valid date;
+     *         {@code false} otherwise
+     */
+    private static boolean isValidDate(String dateString) {
+        String[] parts = dateString.split("-");
+
+        try {
+            int year = Integer.parseInt(parts[0]);
+            int month = Integer.parseInt(parts[1]);
+            int day = Integer.parseInt(parts[2]);
+
+            // Validate month
+            if (month < 1 || month > 12) {
+                return false;
+            }
+
+            // Validate day based on month
+            int[] daysInMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+            if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {
+                daysInMonth[1] = 29; // Leap year
+            }
+
+            return day > 0 && day <= daysInMonth[month - 1];
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    private static boolean isExitCommand(String input){
+        return input.equalsIgnoreCase("exit");
     }
 }
